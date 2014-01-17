@@ -11,6 +11,7 @@ class Case
         Case(int x, int y);
         virtual ~Case();
         virtual Position getPosition();
+	virtual void setPosition(int x, int y);
         virtual Pion *getPion();
         virtual void setPion(Pion *p);
     protected:

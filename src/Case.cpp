@@ -20,6 +20,12 @@ Position Case::getPosition()
     return this->pos;
 }
 
+void Case::setPosition(int x, int y)
+{
+  this->pos.setX(x);
+  this->pos.setY(y);
+}
+
 Pion *Case::getPion()
 {
     return this->p;

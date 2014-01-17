@@ -11,6 +11,9 @@ class Position
         virtual int getX();
         virtual int getY();
         bool estEgal(Position a);
+	bool operator==(Position a);
+	void setX(int x);
+	void setY(int y);
     protected:
     private:
         int x;

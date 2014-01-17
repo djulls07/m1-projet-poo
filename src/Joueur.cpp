@@ -1,5 +1,4 @@
 #include "../include/Joueur.h"
-#include <iostream>
 
 
 Joueur::Joueur()
