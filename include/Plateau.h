@@ -26,8 +26,8 @@ class Plateau
   unsigned int tailleH;
   unsigned int tailleV;
   std::vector<std::vector <Case*> > grille;
-  Joueur *j1;
-  Joueur *j2;
+  Joueur j1;
+  Joueur j2;
   
  private:
 

@@ -3,7 +3,9 @@
 
 using namespace std;
 
-PlateauP4::PlateauP4() : Plateau(7,6)
+PlateauP4::PlateauP4(){}
+
+PlateauP4::PlateauP4(string names[]) : Plateau(7,6)
 {
   //ctor
   int i;
@@ -12,6 +14,8 @@ PlateauP4::PlateauP4() : Plateau(7,6)
     for (j=0; j<tailleV; j++)
       this->grille[i][j] = new Case(i,j);
   }
+  this->j1(names[0], 21, 0);
+  this->j2(names[1], 21, 1);
 }
 
 PlateauP4::~PlateauP4()

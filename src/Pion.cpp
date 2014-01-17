@@ -5,9 +5,9 @@ Pion::Pion()
     //ctor
 }
 
-Pion::Pion(unsigned int i)
+Pion::Pion(unsigned int i) : couleur(i)
 {
-    this->couleur = i;
+  //ctor
 }
 
 Pion::~Pion()
