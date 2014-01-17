@@ -50,13 +50,18 @@ bool Plateau::estValide(Position p)
  */
 void Plateau::deplacerPion(Position depart, Position arrive)
 {
-  Case c;
+  Pion *p1;
+  Pion *p2;
+  Pion *p;
   try {
     if (depart==arrive) {
       cout << "Aucun déplacement nécessaire.\n" << endl;
       throw 7;
     }
-    this->echangeCase(depart, arrive);//echange case verifie la validité des pos
+    p1 = this->getCase(depart)->getPion();
+    p2 = this->getCase(arrive)->getPion();
+    this->getCase(depart)->setPion(p2);
+    this->getCase(arrive)->setPion(p1);
   } catch (int e) {
     cout << "Exception as occured in deplacerPion: " << e << endl;
     return;
@@ -71,19 +76,5 @@ void Plateau::afficher()
       cout << "| " << this->grille[j][i]->getPosition().getX() << 
 	"/" << this->grille[j][i]->getPosition().getY() << " |";
     cout << endl;
-  }
-}
-
-void Plateau::echangeCase(Position a, Position b)
-{
-  Case *c1;
-  Case *c2;
-  Case *tmp;
-  if (this->estValide(a) && this->estValide(b)) {
-    c1 = this->grille[a.getX()][a.getY()];
-    c2 = this->grille[b.getX()][b.getY()];
-    tmp = c2;
-    c2 = c1;
-    c1 = tmp;
   }
 }

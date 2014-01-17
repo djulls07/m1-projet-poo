@@ -1,5 +1,6 @@
 #include "../include/PlateauP4.h"
 #include <iostream>
+
 using namespace std;
 
 PlateauP4::PlateauP4() : Plateau(7,6)
@@ -14,5 +15,11 @@ PlateauP4::PlateauP4() : Plateau(7,6)
 }
 
 PlateauP4::~PlateauP4()
-{    //dtor
+{    
+  //dtor
+  for (int i(0); i<tailleH; i++) {
+    for (int j(0); j<tailleV; j++)
+      delete(this->grille[i][j]);
+  }
 }
+

@@ -1,5 +1,6 @@
 #ifndef PLATEAU_H
 #include "../include/Case.h"
+#include "../include/Joueur.h"
 #include <vector>
 #define PLATEAU_H
 
@@ -25,6 +26,8 @@ class Plateau
   unsigned int tailleH;
   unsigned int tailleV;
   std::vector<std::vector <Case*> > grille;
+  Joueur *j1;
+  Joueur *j2;
   
  private:
 
