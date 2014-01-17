@@ -10,7 +10,7 @@ class Joueur
 {
  public:
   Joueur();
-  Joueur(std::string nom, int nbPions, int couleur);
+  Joueur(std::string name, int nbPions, int couleur);
   virtual ~Joueur();
  protected:
   std::vector<Pion> lPions;

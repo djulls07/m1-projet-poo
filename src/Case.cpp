@@ -7,7 +7,8 @@ Case::Case()
 
 Case::Case(int x, int y): pos(x,y)
 {
-    //ctor
+  //ctor
+  p = 0;
 }
 
 Case::~Case()

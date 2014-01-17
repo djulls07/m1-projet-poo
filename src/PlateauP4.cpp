@@ -3,7 +3,9 @@
 
 using namespace std;
 
-PlateauP4::PlateauP4(){}
+PlateauP4::PlateauP4()
+{
+}
 
 PlateauP4::PlateauP4(string names[]) : Plateau(7,6)
 {
@@ -14,8 +16,8 @@ PlateauP4::PlateauP4(string names[]) : Plateau(7,6)
     for (j=0; j<tailleV; j++)
       this->grille[i][j] = new Case(i,j);
   }
-  this->j1(names[0], 21, 0);
-  this->j2(names[1], 21, 1);
+  this->j1 = Joueur(names[0], 21, 0);
+  this->j2 = Joueur(names[1], 21, 1);
 }
 
 
@@ -28,8 +30,18 @@ PlateauP4::~PlateauP4()
   }
 }
 
-/* Methode pour joueur un pion sur la grille */
-PlateauP4::game()
+/* Methode pour joueur un pion sur la grille 
+   n=0 -> joueur1 et n=1 -> joueur2 */
+void PlateauP4::game(int n)
 {
+  Joueur *j;
+  //A qui le tour !
+  if (!n) j = &j1;
+  else j = &j2;
   
+}
+
+int PlateauP4::endGame()
+{
+  //check si jeu doit finir ( gagant egalité etc...)
 }
