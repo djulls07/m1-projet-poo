@@ -18,6 +18,7 @@ PlateauP4::PlateauP4(string names[]) : Plateau(7,6)
   this->j2(names[1], 21, 1);
 }
 
+
 PlateauP4::~PlateauP4()
 {    
   //dtor
@@ -27,3 +28,8 @@ PlateauP4::~PlateauP4()
   }
 }
 
+/* Methode pour joueur un pion sur la grille */
+PlateauP4::game()
+{
+  
+}

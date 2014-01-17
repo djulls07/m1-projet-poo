@@ -20,6 +20,9 @@ class Plateau
   virtual void deplacerPion(Position depart, Position arrive);
   virtual void afficher(); //pour debug
   virtual void echangeCase(Position a, Position b);
+  
+  virtual int endGame() = 0;
+  virtual void game() = 0;
 
  protected:
   

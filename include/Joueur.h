@@ -13,8 +13,9 @@ class Joueur
   Joueur(std::string nom, int nbPions, int couleur);
   virtual ~Joueur();
  protected:
-  std::vector<Pion*> lPions;
+  std::vector<Pion> lPions;
   std::string nom;
+  int couleur;
  private:
 };
 
