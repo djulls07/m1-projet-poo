@@ -2,6 +2,7 @@
 #include "../include/Case.h"
 #include "../include/Joueur.h"
 #include <vector>
+#include <string>
 #define PLATEAU_H
 
 
@@ -18,11 +19,13 @@ class Plateau
   virtual Case *getCase(Position p);
   virtual bool estValide(Position p);
   virtual void deplacerPion(Position depart, Position arrive);
-  virtual void afficher(); //pour debug
+  virtual std::string afficher() = 0;
   
-  virtual int endGame() = 0;
-  virtual void game(int n) = 0;
-
+  virtual int endGame() = 0; //abs
+  virtual void game(int n) = 0; //abs
+  virtual bool checkCaseJouable(Position p) = 0;
+  virtual void jouerPion(Position p, Joueur *j) = 0;
+  
  protected:
   
   unsigned int tailleH;

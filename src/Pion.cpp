@@ -14,3 +14,10 @@ Pion::~Pion()
 {
     //dtor
 }
+
+std::string Pion::afficher()
+{
+  if (this->couleur == 0)
+    return "1";
+  return "2";
+}

@@ -14,6 +14,7 @@ Case::Case(int x, int y): pos(x,y)
 Case::~Case()
 {
     //dtor
+  if (this->p !=0) delete(this->p);
 }
 
 Position Case::getPosition()
@@ -35,4 +36,11 @@ Pion *Case::getPion()
 void Case::setPion(Pion *p)
 {
     this->p = p;
+}
+
+std::string Case::afficher()
+{
+  std::string s = "0";
+  if (this->p != 0) s = this->p->afficher();
+  return s;
 }

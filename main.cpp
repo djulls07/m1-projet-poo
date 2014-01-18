@@ -5,12 +5,26 @@ using namespace std;
 
 int main()
 {
-  string s;
-  cout << "Hello world!" << endl;
-  /*PlateauP4* p = new PlateauP4();
-  cout << p->getTailleV() << endl;
-  p->afficher();
+  string j[2];
+  cin >> j[0];
+  cout << "joueur 1 : " << j[0] << endl;
+  cin >> j[1];
+  cout << "Joueur 2 : " << j[1] << endl;
+
+  PlateauP4 *p = new PlateauP4(j);
+  //cout << p->getTailleV() << endl;
+  cout << p->afficher();
+  while(!p->endGame()) {
+    p->game(0);
+    cout << p->afficher();
+    if (p->endGame()) {
+      break;
+    }
+    p->game(1);
+    cout << p->afficher();
+  }
+  cout << "Partie terminee" << endl;
   delete(p);
-  cin >> s;
-  return 0;*/
+  //cin >> s;
+  return 0;
 }

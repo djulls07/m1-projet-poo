@@ -1,6 +1,6 @@
 #ifndef PION_H
 #define PION_H
-
+#include <string>
 
 class Pion
 {
@@ -8,6 +8,7 @@ class Pion
         Pion();
         Pion(unsigned int i);
         virtual ~Pion();
+	virtual std::string afficher();
     protected:
         unsigned int couleur;
     private:

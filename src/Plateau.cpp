@@ -67,14 +67,3 @@ void Plateau::deplacerPion(Position depart, Position arrive)
     return;
   }
 }
-
-void Plateau::afficher()
-{
-  unsigned int i,j;
-  for (i=0; i < this->tailleV; i++) {
-    for (j=0; j< this->tailleH; j++)
-      cout << "| " << this->grille[j][i]->getPosition().getX() << 
-	"/" << this->grille[j][i]->getPosition().getY() << " |";
-    cout << endl;
-  }
-}
