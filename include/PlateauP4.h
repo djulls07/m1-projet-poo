@@ -9,7 +9,7 @@ class PlateauP4 : public Plateau
         PlateauP4();
 	PlateauP4(std::string names[]);
         virtual ~PlateauP4();
-	virtual void game(int n);
+	virtual int game(int n);
 	virtual int endGame();
 	virtual bool checkCaseJouable(Position p);
 	virtual void jouerPion(Position p, Joueur *j);

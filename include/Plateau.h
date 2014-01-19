@@ -22,7 +22,7 @@ class Plateau
   virtual std::string afficher() = 0;
   
   virtual int endGame() = 0; //abs
-  virtual void game(int n) = 0; //abs
+  virtual int game(int n) = 0; //abs
   virtual bool checkCaseJouable(Position p) = 0;
   virtual void jouerPion(Position p, Joueur *j) = 0;
   virtual int run () = 0;
@@ -34,7 +34,6 @@ class Plateau
   std::vector<std::vector <Case*> > grille;
   Joueur j1;
   Joueur j2;
-  int fin;
   
  private:
 

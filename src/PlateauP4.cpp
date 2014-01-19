@@ -32,7 +32,7 @@ PlateauP4::~PlateauP4()
 
 /* Methode pour joueur un pion sur la grille 
    n=0 -> joueur1 et n=1 -> joueur2 */
-void PlateauP4::game(int n)
+int PlateauP4::game(int n)
 {
   Joueur *j;
   string s;
