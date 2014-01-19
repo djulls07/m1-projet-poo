@@ -4,14 +4,9 @@ using namespace std;
 
 CaseO::CaseO(int x, int y) : Case(x, y)
 {
-  cout << "CaseO Init IN" << endl;
   this->jouable = 0;
-  cout << "CaseO Init Jouable" << endl;
   this->disposition = vector <int>(2);
-  this->disposition[0] = 0;
-  cout << "CaseO Init disposition[0]" << endl;
-  this->disposition[1] = 0;
-  cout << "CaseO Init OUT" << endl;
+  this->disposition[0] = 0;  this->disposition[1] = 0;
 }
 
 CaseO::~CaseO()

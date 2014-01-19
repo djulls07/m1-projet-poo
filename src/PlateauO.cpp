@@ -12,7 +12,6 @@ PlateauO::PlateauO(string names[]): Plateau(8,8)
   for (i=0; i<tailleH; i++) {
     for (j=0; j<tailleV; j++) {
       this->grille[i][j] = new CaseO(i,j);
-      cout << "CaseO "<< i << " " << j << endl;
       // Initialisation des cases
       if (i == 2 || i == 5) {
 	if (j > 1 && j < 6)
@@ -346,7 +345,6 @@ void PlateauO::jouerPion(Position p, Joueur* j)
   j->getLPions().pop_back();
 }
 
-// A FINIR les POSITIONS DE MERRRRRRRDEEEEEEEE!!!!!!!!!!
 int PlateauO::jouerPionO(Position p, Joueur* j) 
 {
   int dispo = this->getCase(p)->getDisposition(j->getCouleur());
@@ -363,12 +361,7 @@ int PlateauO::jouerPionO(Position p, Joueur* j)
 /* Méthode qui vérifie qu'un joueur peut jouer et le fait jouer.
  *
  */
-void PlateauO::game(int joueur)
-{
-
-}
-
-int PlateauO::gameO(int joueur) {
+int PlateauO::game(int joueur) {
   int ok = 0;
   int x, y;
   Joueur *j;
@@ -440,7 +433,7 @@ int PlateauO::endGame() {
 int PlateauO::run() {
   int fin;
   cout << "Bienvenue dans Othello " << this->j1.getNom() << " et " << this->j2.getNom() << "!" << endl;
-  this->afficher();
+  cout << this->afficher();
   while (1) {
     fin = 0;
     fin += gameO(0);
