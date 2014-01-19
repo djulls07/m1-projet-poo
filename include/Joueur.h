@@ -15,6 +15,8 @@ class Joueur
   virtual std::string getNom();
   virtual std::vector<Pion*> getLPions();
   virtual int getCouleur();
+  virtual std::string getNomCouleur();
+
  protected:
   std::vector<Pion*> lPions;
   std::string nom;

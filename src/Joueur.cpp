@@ -32,3 +32,13 @@ int Joueur::getCouleur()
 { 
   return this->couleur;
 }
+
+std::string Joueur::getNomCouleur()
+{
+  std::string s;
+  if (this->couleur == 1)
+    s = "\033[31m"+this->nom+"\033[0m";
+  else 
+    s = "\033[33m"+this->nom+"\033[0m";
+  return s;
+}

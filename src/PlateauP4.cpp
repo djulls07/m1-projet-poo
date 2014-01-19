@@ -65,36 +65,42 @@ int PlateauP4::endGame()
   int r = 0;
   //check si jeu doit finir ( gagant egalité etc...)
   if ((r=checkDiagonales()) != 0) return r;
-  //if ((r=checkLignes()) != 0) return r;
-  //if ((r=checkColonnes()) !=0) return r;
+  if ((r=checkLignes()) != 0) return r;
+  if ((r=checkColonnes()) !=0) return r;
   return r;
 }
 
 int PlateauP4::checkColonnes()
 {
-  int count;
+  int count = 0;
   int couleur = -1;
   Case *c;
-  int i = 0;
-  int j = 0;
-  for (i=0; i<tailleH; i++) {
+  int j;
+
+  for (int i(0); i<tailleH; i++) {
+    j = 0;
     count = 0;
-    //si puissance 4 en colonnes, alors la couleur gagnante on the top...
-    c = this->getCase(Position(i,j++));
-    while(c->getPion() == 0 && j<tailleV-3) 
-      c = this->getCase(Position(i,j++));
-    if (j<tailleV-3) {
-      c = this->getCase(Position(i,j++));
+    couleur = -1;
+    c = this->getCase(Position(i, j++));
+    if (c==0) cout << "NAAAHHH";
+    if (c->hasPion()) {
+      count++;
       couleur = c->getPion()->getCouleur();
-      count = 1;
-    } else {
-      continue;
     }
-    while(c->getPion() != 0 && j<tailleV) {
-      c = this->getCase(Position(i,j));
-      if (c->getPion()->getCouleur() == couleur) count++;
-      else break;
-      if (count == 4) return couleur;
+    while (j<tailleV) {
+      c = this->getCase(Position(i,j++));
+      if (c->hasPion()) {
+	if (c->getPion()->getCouleur() == couleur) {
+	  count++;
+	  if (count == 4) return couleur;
+	} else {
+	  count = 1;
+	  couleur = c->getPion()->getCouleur();
+	}
+      } else {
+	count = 0;
+	couleur = -1;
+      }
     }
   }
   return 0;
@@ -104,7 +110,6 @@ int PlateauP4::checkDiagonales()
 {
   int d = checkDiagoG();
   if (d == 0) d = checkDiagoD();
-  cout << "diago: " << d << endl;
   return d;
 }
  
@@ -144,7 +149,6 @@ int PlateauP4::checkDiag(Position p, bool b) //si true diago gauche->drt
   
   Case *c = this->getCase(p);
   if (c->hasPion()) {
-    cout << "++: " <<count;
     count++;
     couleur = c->getPion()->getCouleur();
   }
@@ -155,7 +159,6 @@ int PlateauP4::checkDiag(Position p, bool b) //si true diago gauche->drt
       if (c->hasPion()) {
 	if (c->getPion()->getCouleur() == couleur) {
 	  count++;
-	  cout << "++ = " << count; 
 	  if (count == 4) return couleur;
 	} else {
 	  count = 1;
@@ -222,14 +225,21 @@ string PlateauP4::afficher()
 
 int PlateauP4::run()
 {
+  int winner;
+  string w;
   cout << afficher();
-  while(!endGame()) {
+  while(!(winner=endGame())) {
     game(0);
     cout << afficher();
-    if (endGame()) {
+    if ((winner=endGame())) {
       break;
     }
     game(1);
     cout << afficher();
   }
+  w = "Partie terminée, le vainqueur est -> ";
+  if (winner == 1) w += j1.getNomCouleur();
+  else if (winner == 2) w += j2.getNomCouleur();
+  cout << w << endl;
+  return 0;
 }

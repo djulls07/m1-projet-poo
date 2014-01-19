@@ -42,10 +42,10 @@ Case *Plateau::getCase(Position p)
 /* Verifie la validité d'une case par rapport au plateau */
 bool Plateau::estValide(Position p)
 {
-  if (this->tailleH > p.getX() && p.getX() >= 0 && p.getY() >= 0 && 
-      this->tailleV > p.getY())
+  if (this->tailleH > p.getX() && p.getX() >= 0 && p.getY() >= 0 && this->tailleV > p.getY())
     return true;
-  return false;
+  else 
+    return false;
 }
 
 

@@ -8,7 +8,7 @@ Case::Case()
 Case::Case(int x, int y): pos(x,y)
 {
   //ctor
-  p = 0;
+  this->p = 0;
 }
 
 Case::~Case()
@@ -47,7 +47,6 @@ std::string Case::afficher()
 
 bool Case::hasPion()
 {
-  bool b;
-  (this->p == 0) ? b = false : b = true;
-  return b;
+  if (this->p != 0) return true;
+  return false;
 }
