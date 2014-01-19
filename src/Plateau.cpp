@@ -5,12 +5,14 @@ using namespace std;
 Plateau::Plateau()
 {
   //ctor
+  this->fin = -1;
 }
 
 Plateau::Plateau(unsigned int h, unsigned int v) : tailleH(h), tailleV(v)
 {
   //ctor
   this->grille = vector <vector <Case*> >(tailleH, vector<Case*>(tailleV));
+  this->fin = -1;
 }
 
 Plateau::~Plateau()
@@ -34,6 +36,7 @@ Case *Plateau::getCase(Position p)
   if (this->estValide(p)) {
     return this->grille[p.getX()][p.getY()];
   }
+  else return 0;
 }
 
 /* Verifie la validité d'une case par rapport au plateau */

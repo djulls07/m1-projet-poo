@@ -9,6 +9,8 @@ class Pion
         Pion(unsigned int i);
         virtual ~Pion();
 	virtual std::string afficher();
+	virtual int getCouleur();
+	virtual void setCouleur(int c);
     protected:
         unsigned int couleur;
     private:

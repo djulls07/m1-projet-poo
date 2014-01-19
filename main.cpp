@@ -12,17 +12,7 @@ int main()
   cout << "Joueur 2 : " << j[1] << endl;
 
   PlateauP4 *p = new PlateauP4(j);
-  //cout << p->getTailleV() << endl;
-  cout << p->afficher();
-  while(!p->endGame()) {
-    p->game(0);
-    cout << p->afficher();
-    if (p->endGame()) {
-      break;
-    }
-    p->game(1);
-    cout << p->afficher();
-  }
+  p->run();
   cout << "Partie terminee" << endl;
   delete(p);
   //cin >> s;

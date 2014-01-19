@@ -21,3 +21,13 @@ std::string Pion::afficher()
     return "1";
   return "2";
 }
+
+int Pion::getCouleur()
+{
+  return this->couleur;
+}
+
+void Pion::setCouleur(int c)
+{
+  this->couleur = c;
+}
