@@ -212,14 +212,19 @@ void PlateauP4::jouerPion(Position p, Joueur *j)
 }
 
 string PlateauP4::afficher()
-{
+{ 
   string s = "";
+  s += "X\\Y  1   2   3   4   5   6   7   8\n";
   for (int i(0); i < this->tailleV; i++) {
-    for (int j(0); j< this->tailleH; j++) {
-      s += this->getCase(Position(j,i))->afficher() + " | ";
+    s += "------------------------------------\n ";
+    s += intToString(i+1);
+    s += " | ";
+    for (int j(0); j < this->tailleH; j++) {
+      s += this->getCase(Position(i, j))->afficher() + " | ";
     }
     s += "\n";
   }
+  s += "------------------------------------\n";
   return s;
 }
 
