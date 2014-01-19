@@ -1,6 +1,5 @@
 #include "../include/PlateauO.h"
 #include <iostream>
-#include <sstream>
 using namespace std;
 
 PlateauO::PlateauO(string names[]): Plateau(8,8)
@@ -446,13 +445,6 @@ int PlateauO::run() {
   fin = endGame();
   cout << "Belle partie! A la prochaine!" << endl;
   return fin;
-}
-
-string intToString(int i)
-{
-    std::stringstream ss;   // <-- also note namespace qualification
-    ss << i;
-    return ss.str();
 }
 
 string PlateauO::afficher()
