@@ -436,8 +436,8 @@ int PlateauO::run() {
   cout << this->afficher();
   while (1) {
     fin = 0;
-    fin += gameO(0);
-    fin += gameO(1);
+    fin += game(0);
+    fin += game(1);
     if (fin > 2)
       return 1;
     else if (fin == 2)
