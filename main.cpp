@@ -12,9 +12,8 @@ int main()
   cin >> j[1];  cout << "Partie terminee" << endl;
 
   cout << "Joueur 2 : " << j[1] << endl;
-  PlateauP4 *p = new PlateauP4(j);
+  // PlateauP4 *p = new PlateauP4(j);
   p->run();
-  //delete(p);
- 
+  delete(p); 
   return 0;
 }
