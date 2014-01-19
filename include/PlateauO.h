@@ -26,8 +26,7 @@ class PlateauO : public Plateau
 	void retournerDiagonale(Position p, int c, int disposition);
 	int jouerPionO(Position p, Joueur* j);
 	virtual void jouerPion(Position p, Joueur* j);
-	virtual void game(int joueur);
-	int gameO(int joueur);
+	virtual int game(int joueur);
 	virtual int endGame();
 	virtual std::string afficher();
 	
