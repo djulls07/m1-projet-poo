@@ -16,6 +16,7 @@ class Case
         virtual Pion *getPion();
         virtual void setPion(Pion *p);
 	virtual std::string afficher();
+	virtual bool hasPion();
     protected:
         Position pos;
         Pion *p;

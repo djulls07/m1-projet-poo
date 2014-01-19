@@ -14,7 +14,6 @@ int main()
   PlateauP4 *p = new PlateauP4(j);
   p->run();
   cout << "Partie terminee" << endl;
-  delete(p);
-  //cin >> s;
+  //delete(p);
   return 0;
 }

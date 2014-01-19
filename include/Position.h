@@ -1,4 +1,5 @@
 #ifndef POSITION_H
+#include <string>
 #define POSITION_H
 
 
@@ -10,10 +11,11 @@ class Position
         virtual ~Position();
         virtual int getX();
         virtual int getY();
-        bool estEgal(Position a);
-	bool operator==(Position a);
-	void setX(int x);
-	void setY(int y);
+        virtual bool estEgal(Position a);
+	virtual bool operator==(Position a);
+	virtual void setX(int x);
+	virtual void setY(int y);
+	virtual Position createModPos(int incrX, int incrY);
     protected:
     private:
         int x;

@@ -16,8 +16,8 @@ PlateauP4::PlateauP4(string names[]) : Plateau(7,6)
     for (j=0; j<tailleV; j++)
       this->grille[i][j] = new Case(i,j);
   }
-  this->j1 = Joueur(names[0], 21, 0);
-  this->j2 = Joueur(names[1], 21, 1);
+  this->j1 = Joueur(names[0], 21, 1);
+  this->j2 = Joueur(names[1], 21, 2);
 }
 
 
@@ -60,20 +60,6 @@ void PlateauP4::game(int n)
   }
 }
 
-int PlateauP4::run()
-{
-  cout << afficher();
-  while(!endGame()) {
-    game(0);
-    cout << afficher();
-    if (endGame()) {
-      break;
-    }
-    game(1);
-    cout << afficher();
-  }
-}
-
 int PlateauP4::endGame()
 {
   int r = 0;
@@ -81,7 +67,7 @@ int PlateauP4::endGame()
   if ((r=checkDiagonales()) != 0) return r;
   //if ((r=checkLignes()) != 0) return r;
   //if ((r=checkColonnes()) !=0) return r;
-  return 0;
+  return r;
 }
 
 int PlateauP4::checkColonnes()
@@ -116,7 +102,7 @@ int PlateauP4::checkColonnes()
 
 int PlateauP4::checkDiagonales()
 {
-  int d(checkDiagoG());
+  int d = checkDiagoG();
   if (d == 0) d = checkDiagoD();
   cout << "diago: " << d << endl;
   return d;
@@ -125,31 +111,78 @@ int PlateauP4::checkDiagonales()
 
 int PlateauP4::checkDiagoG()
 {
-  checkDiag(Position(0,2));
-  checkDiag(Position(0,1));
-  checkDiag(Position(0,0));
-  
-  checkDiag(Position(1,0));	
-  checkDiag(Position(2,0));
-  checkDiag(Position(3,0));
-
+  /* diagonales gauche->droite */
+  int t;
+  if ((t=checkDiag(Position(0,2), true)) !=0) return t;
+  if ((t=checkDiag(Position(0,1), true)) !=0) return t;
+  if ((t=checkDiag(Position(0,0), true)) !=0) return t;
+  if ((t=checkDiag(Position(1,0), true)) !=0) return t;
+  if ((t=checkDiag(Position(2,0), true)) !=0) return t;
+  if ((t=checkDiag(Position(3,0), true)) !=0) return t;
+  return 0;
 }
 
 int PlateauP4::checkDiagoD()
 {
-  
+  //diagonales droite->gauche
+  int t;
+  if ((t=checkDiag(Position(tailleH-1,2), false)) != 0) return t;
+  if ((t=checkDiag(Position(tailleH-1,1), false)) != 0) return t;
+  if ((t=checkDiag(Position(tailleH-1,0), false)) != 0) return t;
+  if ((t=checkDiag(Position(tailleH-2,0), false)) != 0) return t;
+  if ((t=checkDiag(Position(tailleH-3,0), false)) != 0) return t;
+  if ((t=checkDiag(Position(tailleH-4,0), false)) != 0) return t;
+  return 0;
 }
 
-int PlateauP4::checkDiago(const Position p)
+int PlateauP4::checkDiag(Position p, bool b) //si true diago gauche->drt
 {
+  int count = 0;
+  int couleur = -1;
+  int x = p.getX();
+  int y = p.getY();
+  
   Case *c = this->getCase(p);
-  if (p.getX() < 4) { //DiagoG
-    
-    while ( c != 0) {
-      
+  if (c->hasPion()) {
+    cout << "++: " <<count;
+    count++;
+    couleur = c->getPion()->getCouleur();
+  }
+  if (b) { //DiagoG
+    x++;
+    y++;
+    while ( (c = this->getCase(Position(x++, y++))) != 0 ) {
+      if (c->hasPion()) {
+	if (c->getPion()->getCouleur() == couleur) {
+	  count++;
+	  cout << "++ = " << count; 
+	  if (count == 4) return couleur;
+	} else {
+	  count = 1;
+	  couleur = c->getPion()->getCouleur();
+	}
+      } else {
+	count = 0;
+	couleur = -1;
+      }
     }
   } else { //DiagoD
-    
+    x--;
+    y++;
+    while ( (c = this->getCase(Position(x--, y++))) != 0 ) {
+      if (c->hasPion()) {
+	if (c->getPion()->getCouleur() == couleur) {
+	  count++;
+	  if (count == 4) return couleur;
+	} else {
+	  count = 1;
+	  couleur = c->getPion()->getCouleur();
+	}
+      } else {
+	count = 0;
+	couleur = -1;
+      }
+    }
   }
 }
 
@@ -169,8 +202,8 @@ void PlateauP4::jouerPion(Position p, Joueur *j)
 {
   int i(0);
   if (j->getLPions().size() > 0) {
-    while(i < 6 && this->getCase(Position(p.getX(),i))->getPion() == 0)i++;
-    this->getCase(Position(p.getX(), i-1))->setPion(j->getLPions().back());
+    while(i < 6 && !this->getCase(p.createModPos(0, i))->hasPion())i++;
+    this->getCase(p.createModPos(0, i-1))->setPion(j->getLPions().back());
     j->getLPions().pop_back();
   }
 }
@@ -180,9 +213,23 @@ string PlateauP4::afficher()
   string s = "";
   for (int i(0); i < this->tailleV; i++) {
     for (int j(0); j< this->tailleH; j++) {
-      s += this->grille[j][i]->afficher() + " | ";
+      s += this->getCase(Position(j,i))->afficher() + " | ";
     }
     s += "\n";
   }
   return s;
+}
+
+int PlateauP4::run()
+{
+  cout << afficher();
+  while(!endGame()) {
+    game(0);
+    cout << afficher();
+    if (endGame()) {
+      break;
+    }
+    game(1);
+    cout << afficher();
+  }
 }

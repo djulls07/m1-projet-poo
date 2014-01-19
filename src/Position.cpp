@@ -47,3 +47,8 @@ void Position::setY(int y)
 {
   this->y = y;
 }
+
+Position Position::createModPos(int incrX, int incrY)
+{
+  return Position(this->x+incrX, this->y+incrY);
+}

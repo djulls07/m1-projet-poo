@@ -44,3 +44,10 @@ std::string Case::afficher()
   if (this->p != 0) s = this->p->afficher();
   return s;
 }
+
+bool Case::hasPion()
+{
+  bool b;
+  (this->p == 0) ? b = false : b = true;
+  return b;
+}

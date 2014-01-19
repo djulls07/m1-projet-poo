@@ -18,7 +18,7 @@ class PlateauP4 : public Plateau
 	virtual int checkDiagonales();
 	virtual int checkDiagoG();
 	virtual int checkDiagoD();
-	virtual int checkDiago(Position p);
+	virtual int checkDiag(Position p, bool b);
 	virtual int checkLignes();
 	virtual int checkColonnes();
 
