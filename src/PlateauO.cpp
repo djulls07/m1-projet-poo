@@ -220,6 +220,7 @@ void PlateauO::retournerHorizontale(Position p, int c, int disposition)
 	while (this->getCase(p.createModPos(-i, 0))->hasPion() &&
 	       this->getCase(p.createModPos(-i, 0))->getPion()->getCouleur() != c) {
 	  this->getCase(p.createModPos(-i, 0))->getPion()->setCouleur(c);
+	  cout << "retournerHorizontale1 i:" << i << " "  << p.getX()-i << " " << p.getY() << endl;
 	  i++;
 	}
       }
@@ -234,6 +235,7 @@ void PlateauO::retournerHorizontale(Position p, int c, int disposition)
 	while (this->getCase(p.createModPos(i, 0))->hasPion() &&
 	       this->getCase(p.createModPos(i, 0))->getPion()->getCouleur() != c) {
 	  this->getCase(p.createModPos(i, 0))->getPion()->setCouleur(c);
+	  cout << "retournerHorizontale2 i:" << i << " "  << p.getX()+i << " " << p.getY() << endl;
 	  i++;
 	}
       }
@@ -252,6 +254,7 @@ void PlateauO::retournerVerticale(Position p, int c, int disposition)
 	while (this->getCase(p.createModPos(0, -i))->hasPion() &&
 	       this->getCase(p.createModPos(0, -i))->getPion()->getCouleur() != c) {
 	  this->getCase(p.createModPos(0, -i))->getPion()->setCouleur(c);
+	  cout << "retournerVerticale1 i:" << i << " "  << p.getX() << " " << p.getY()-i << endl;
 	  i++;
 	}
       }
@@ -266,6 +269,7 @@ void PlateauO::retournerVerticale(Position p, int c, int disposition)
 	while (this->getCase(p.createModPos(0, i))->hasPion() &&
 	       this->getCase(p.createModPos(0, i))->getPion()->getCouleur() != c) {
 	  this->getCase(p.createModPos(0, i))->getPion()->setCouleur(c);
+	  cout << "retournerVerticale2 i:" << i << " "  << p.getX() << " " << p.getY()+i << endl;
 	  i++;
 	}
       }
@@ -285,6 +289,7 @@ void PlateauO::retournerDiagonale(Position p, int c, int disposition)
 	while (this->getCase(p.createModPos(-i, -i))->hasPion() &&
 	       this->getCase(p.createModPos(-i, -i))->getPion()->getCouleur() != c) {
 	  this->getCase(p.createModPos(-i, -i))->getPion()->setCouleur(c);
+	  cout << "retournerDiagonale1 i:" << i << " "  << p.getX()-i << " " << p.getY()-i << endl;
 	  i++;
 	}
       }
@@ -299,6 +304,7 @@ void PlateauO::retournerDiagonale(Position p, int c, int disposition)
 	while (this->getCase(p.createModPos(i, i))->hasPion() &&
 	       this->getCase(p.createModPos(i, i))->getPion()->getCouleur() != c) {
 	  this->getCase(p.createModPos(i, i))->getPion()->setCouleur(c);
+	  cout << "retournerDiagonale2 i:" << i << " "  << p.getX()+i << " " << p.getY()+i << endl;
 	  i++;
 	}
       }
@@ -313,6 +319,7 @@ void PlateauO::retournerDiagonale(Position p, int c, int disposition)
 	while (this->getCase(p.createModPos(-i, i))->hasPion() &&
 	       this->getCase(p.createModPos(-i, i))->getPion()->getCouleur() != c) {
 	  this->getCase(p.createModPos(-i, i))->getPion()->setCouleur(c);
+	  cout << "retournerDiagonale3 i:" << i << " "  << p.getX()-i << " " << p.getY()+i << endl;
 	  i++;
 	}
       }
@@ -327,6 +334,7 @@ void PlateauO::retournerDiagonale(Position p, int c, int disposition)
 	while (this->getCase(p.createModPos(i, -i))->hasPion() &&
 	       this->getCase(p.createModPos(i, -i))->getPion()->getCouleur() != c) {
 	  getCase(p.createModPos(i, -i))->getPion()->setCouleur(c);
+	  cout << "retournerDiagonale4 i:" << i << " "  << p.getX()+i << " " << p.getY()-i << endl;
 	  i++;
 	}
       }
@@ -339,7 +347,6 @@ void PlateauO::retournerDiagonale(Position p, int c, int disposition)
 
 void PlateauO::jouerPion(Position p, Joueur* j)
 {
-  j->getLPions();
   this->getCase(p)->setPion(j->getLPions().back());
   j->getLPions().pop_back();
 }
