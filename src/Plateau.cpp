@@ -5,14 +5,12 @@ using namespace std;
 Plateau::Plateau()
 {
   //ctor
-  this->fin = -1;
 }
 
 Plateau::Plateau(unsigned int h, unsigned int v) : tailleH(h), tailleV(v)
 {
   //ctor
   this->grille = vector <vector <Case*> >(tailleH, vector<Case*>(tailleV));
-  this->fin = -1;
 }
 
 Plateau::~Plateau()
