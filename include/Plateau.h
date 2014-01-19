@@ -1,6 +1,7 @@
 #ifndef PLATEAU_H
-#include "../include/Case.h"
-#include "../include/Joueur.h"
+#include "Case.h"
+#include "Joueur.h"
+#include "fonctions.h"
 #include <vector>
 #include <string>
 #define PLATEAU_H
