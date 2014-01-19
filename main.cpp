@@ -1,17 +1,8 @@
 #include <iostream>
-#include <sstream>
 #include "include/PlateauP4.h"
 #include "include/PlateauO.h"
 
 using namespace std;
-
-
-string intToString(int i)
-{
-  std::stringstream ss;   // <-- also note namespace qualification
-  ss << i;
-  return ss.str();
-}
 
 int main()
 {
