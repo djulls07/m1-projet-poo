@@ -10,7 +10,7 @@ Joueur::Joueur(std::string name, int nbPions, int couleur)
   this->nom = name;
   this->lPions = std::vector<Pion*>();
   for (int i(0); i<nbPions; i++) {
-    this->lPions.push_back(new Pion(couleur));
+    this->lPions[i] = new Pion(couleur);
   }
   this->couleur = couleur;
 }
@@ -18,7 +18,7 @@ Joueur::Joueur(std::string name, int nbPions, int couleur)
 Joueur::~Joueur()
 {
   //dtor
-  for (int i(0); i<this->lPions.size(); i++) this->lPions.pop_back();
+  for (int i(0); i<this->lPions.size(); i++) delete(this->lPions[i]);
 }
 
 std::string Joueur::getNom()
