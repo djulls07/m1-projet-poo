@@ -1,20 +1,115 @@
 #include <limits>
-// Constructeur
-// estMat
-// game
-// estPat
-// run
-// Interface
-// JoueurE
-// CaseE
-// Piece (renommer fichier)
-// afficher
-// var : Position dernierCoup
-// var : bool pep
-// var : Position roiBlanc
-// var : Position roiNoir
+#include <cstdlib>
+#include "../include/Echequier.h"
 
-bool Echequier::menaceeParRoi(Poisiton p, int c) 
+using namespace std;
+
+Echequier::Echequier(string names[]): Plateau(8, 8)
+{
+  int i;
+  int j;
+  this->grille = vector <vector <CaseE*> >(tailleH, vector<CaseE*>(tailleV));
+  for (i=0; i<tailleH; i++) {
+    for (j=0; j<tailleV; j++) {
+      this->grille[i][j] = new CaseE(i,j);
+      // Initialisation des cases
+      // Noirs
+      // Pions
+      if (i == 0) {
+	switch (j) {
+	  // Tours
+	case 0 :
+	case 7 : {
+	  this->grille[i][j]->setPion(new Piece(3, 2));
+	  break;
+	}
+	  // Cavaliers
+	case 1 :
+	case 6 : {
+	  this->grille[i][j]->setPion(new Piece(1, 2));
+	  break;
+	}
+	  // Fous
+	case 2 :
+	case 5 : {
+	  this->grille[i][j]->setPion(new Piece(2, 2));
+	  break;
+	}
+	  //Dame
+	case 3 : {
+	  this->grille[i][j]->setPion(new Piece(4, 2));
+	  break;
+	}
+	  //Roi
+	case 4 : {
+	  this->roiNoir = Position(i, j);
+	  this->grille[i][j]->setPion(new Piece(5, 2));
+	  break;
+	}
+	}
+      } else if (i == 1)
+	this->grille[i][j]->setPion(new Piece(0, 2));
+      
+      // Blancs
+      // Pions
+      else if (i == 6)
+	this->grille[i][j]->setPion(new Piece(0, 1));
+      else if (i == 7) {
+	switch (j) {
+	  // Tours
+	case 0 :
+	case 7 : {
+	  this->grille[i][j]->setPion(new Piece(3, 1));
+	  break;
+	}
+	  // Cavaliers
+	case 1 :
+	case 6 : {
+	  this->grille[i][j]->setPion(new Piece(1, 1));
+	  break;
+	}
+	  // Fous
+	case 2 :
+	case 5 : {
+	  this->grille[i][j]->setPion(new Piece(2, 1));
+	  break;
+	}
+	  //Dame
+	case 3 : {
+	  this->grille[i][j]->setPion(new Piece(4, 1));
+	  break;
+	}
+	  //Roi
+	case 4 : {
+	  this->roiBlanc = Position(i, j);
+	  this->grille[i][j]->setPion(new Piece(5, 1));
+	  break;
+	}
+	}
+      }
+    }
+  }
+
+  this->dernierCoup = Position(0, 0);
+  this->pep = false;
+  this->fin = false;
+  this->j1 = Joueur(names[0], 0, 1);
+  this->j2 = Joueur(names[1], 0, 2);
+}
+
+Echequier::~Echequier()
+{
+
+}
+
+CaseE* Echequier::getCase(Position p)
+{
+   if (this->estValide(p)) {
+    return this->grille[p.getX()][p.getY()];
+  }
+}
+
+bool Echequier::menaceeParRoi(Position p, int c) 
 {
   if (c == 1) { 
     if (std::abs(p.getX() - roiNoir.getX()) <= 1 && std::abs(p.getY() - roiNoir.getY()) <= 1)
@@ -28,12 +123,14 @@ bool Echequier::menaceeParRoi(Poisiton p, int c)
 void Echequier::mangerPion(Position miam) 
 {
   Joueur* j;
-  if (this->getCase(arrivee)->getPion()->getCouleur() == 1)
+  if (this->getCase(miam)->getPion()->getCouleur() == 1)
     j = &j1;
   else
     j = &j2;
-  this->j->getLPions().push_back(this->getCase(arrivee)->getPion());
-  this->getCase(arrivee)->setPion(0);
+  if (this->getCase(miam)->getPion()->isRoi())
+    this->fin = true;
+  j->getLPions().push_back(this->getCase(miam)->getPion());
+  this->getCase(miam)->setPion(0);
 }
 
 void Echequier::deplacerPion(Position depart, Position arrivee)
@@ -69,10 +166,10 @@ bool Echequier::priseEnPassant(Position p)
 {
   int c = this->getCase(this->dernierCoup)->getPion()->getCouleur();
   if (c == 1) {
-    if (p.createModPos(1, 0) == dernierCoup && this->pep)
+    if (p.createModPos(-1, 0) == dernierCoup && this->pep)
       return true;
   } else 
-    if (p.createModPos(-1, 0) == dernierCoup && this->pep)
+    if (p.createModPos(1, 0) == dernierCoup && this->pep)
       return true;
   return false;
 } 
@@ -262,7 +359,7 @@ bool Echequier::deplacePiecePion(Position depart, Position arrivee)
 	// Promotion
 	if (arrivee.getX() == 0) {
 	  this->mangerPion(depart);
-	  this->getCase(arrivee)->setPion(new PionE(this->promouvoirPion(), 1));
+	  this->getCase(arrivee)->setPion(new Piece(this->promouvoirPion(), 1));
 	  this->pep = false;
 	  return true;
 	}
@@ -286,7 +383,7 @@ bool Echequier::deplacePiecePion(Position depart, Position arrivee)
 	if (arrivee.getX() == 0) {
 	  this->mangerPion(depart);
 	  this->mangerPion(arrivee);
-	  this->getCase(arrivee)->setPion(new PionE(this->promouvoirPion(), 1));
+	  this->getCase(arrivee)->setPion(new Piece(this->promouvoirPion(), 1));
 	  this->pep = false;
 	  return true;
 	}
@@ -309,7 +406,7 @@ bool Echequier::deplacePiecePion(Position depart, Position arrivee)
 	// Promotion
 	if (arrivee.getX() == 7) {
 	  this->mangerPion(depart);
-	  this->getCase(arrivee)->setPion(new PionE(this->promouvoirPion(), 2));
+	  this->getCase(arrivee)->setPion(new Piece(this->promouvoirPion(), 2));
 	  this->pep = false;
 	  return true;
 	}
@@ -333,7 +430,7 @@ bool Echequier::deplacePiecePion(Position depart, Position arrivee)
 	if (arrivee.getX() == 7) {
 	  this->mangerPion(depart);
 	  this->mangerPion(arrivee);
-	  this->getCase(arrivee)->setPion(new PionE(this->promouvoirPion(), 2));
+	  this->getCase(arrivee)->setPion(new Piece(this->promouvoirPion(), 2));
 	  this->pep = false;
 	  return true;
 	}
@@ -469,7 +566,7 @@ bool Echequier::deplacePieceDame(Position depart, Position arrivee)
 bool Echequier::deplacePieceRoi(Position depart, Position arrivee)
 {
   int c = this->getCase(depart)->getPion()->getCouleur();
-  Postion p;
+  Position p;
   if (arrivee.getX() - depart.getX() >= -1 &&
       arrivee.getX() - depart.getX() <= 1 &&
       arrivee.getY() - depart.getY() >= -1 &&
@@ -620,14 +717,44 @@ bool Echequier::deplacePiece(Position depart, Position arrivee)
     }
     
     if (ret)
-      this->dernierCoup(arrivee);
+      this->dernierCoup = arrivee;
     return ret;
+  }
+}
+
+bool Echequier::checkCaseJouable(Position p)
+{
+  return true;
+}
+
+void Echequier::jouerPion(Position p, Joueur *j) 
+{
+  
+}
+
+void Echequier::winner(int joueur)
+{
+  if (!joueur) {
+    cout << "Bravo " << j1.getNomCouleur() << "! Tu as gagné!" << endl;
+  } else {
+    cout << "Bravo " << j2.getNomCouleur() << "! Tu as gagné!" << endl;
+  }
+}
+
+void Echequier::abandon(int joueur)
+{
+  if (!joueur) {
+    cout << j1.getNomCouleur() << " a abandonné" << endl;
+    this->winner(1);
+  } else {
+    cout << j2.getNomCouleur() << " a abandonné" << endl;
+    this->winner(2);
   }
 }
 
 int Echequier::game(int joueur) {
   int ok = 0;
-  int x, y;
+  int x, y, v, w;
   Joueur *j;
 
   //A qui le tour !
@@ -635,32 +762,50 @@ int Echequier::game(int joueur) {
   else j = &j2;
   
   if (joueur == 1 || joueur == 0) {
-    ok = this->checkCouleurJouable(joueur);
-    if (!ok) {
-      cout << j->getNom() << " tu n'as pas de possibilités!" << endl;
-      return 1; 
-    }
-    cout << j->getNom() << " à toi de jouer (Joueur " << joueur+1 << ")! :\n" 
-	 << "Pièce à bouger?\n"
-	 << "Choix case (Valeurs : 1 - 8) (Format -> X Y)" << endl;
+    //this->checkCaseJouable()
+    
+    this->afficher();
+    cout << j->getNom() << " à toi de jouer (Joueur " << joueur+1 << ")! :" << endl; 
+    cout << "Pour abandonner, jouer le roi sur place" << endl;
     while(true) {
       try {
+	cout << "Pièce à bouger?\n"
+	     << "Choix case (Valeurs : 1 - 8) (Format -> X Y)" << endl;
 	cin >> x >> y;
-	if (x < 1 || x > 8 || y < 1 || y > 8) throw 0;
-	if (jouerPionO(Position(x-1, y-1), j)) throw 1;
+	cout << "Destination?\n"
+	     << "Choix case (Valeurs : 1 - 8) (Format -> X Y)" << endl;
+	cin >> v >> w;
+	if (x < 1 || x > 8 || y < 1 || y > 8 || v < 1 || v > 8 || w < 1 || w > 8) throw 0;
+	if (!(this->getCase(Position(x-1, y-1))->hasPion())) throw 4;
+	if (this->getCase(Position(x-1, y-1))->getPion()->getCouleur() != j->getCouleur()) throw 3;
+	if (v == x && y == w)
+	  if (this->getCase(Position(x-1, y-1))->getPion()->isRoi() && 
+	      this->getCase(Position(x-1, y-1))->getPion()->getCouleur() == j->getCouleur()) {
+	    this->fin = true;
+	    return 1;
+	  } else throw 2;
+	if (!deplacePiece(Position(x-1, y-1), Position(v-1, w-1))) throw 1;
 	break;
       } catch (int e) {
 	if (e == 0) {
-	  cout << "Erreur : N'essaye pas de jouer en dehors du plateau petit coquin!\n" 
-	       << "(Valeurs : 1 - 8) (Format -> X Y)" << endl;
+	  cout << "Erreur : N'essaye pas de jouer en dehors du plateau petit coquin!\n" << endl;
 	  cin.clear();
 	  cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 	  continue;
 	} else if (e == 1) {
-	  cout << "Erreur : Tu ne peux pas jouer la!\n" 
-	       << "(Valeurs : 1 - 8) (Format -> X Y)" << endl;
+	  cout << "Erreur : Tu ne peux pas jouer la!\n" << endl;
 	  continue;
-	}
+	} else if (e == 2) {
+	  cout << "Erreur : Essairai tu de me prendre pour un jambon?!\n" << endl;
+	  continue;
+	} else if (e == 3) {
+	  cout << "Erreur : Cette pièce ne t'appartient pas!\n" << endl;
+	  continue;
+	} else if (e == 4) {
+	  cout << "Erreur : Ceci est une case vide ...\n" << endl;
+	  cout << x << y << " " << this->getCase(Position(x-1, y-1))->hasPion()  << " " << this->getCase(Position(x-1, y-1))->afficher() << endl;
+	  continue;
+	} 
       }
     }
     cout << this->afficher();
@@ -668,4 +813,62 @@ int Echequier::game(int joueur) {
   }
   cout << "Erreur joueur inconnu!" << endl;
   return 3;
+}
+
+int Echequier::run() {
+  int end;
+  cout << "Bienvenue! Pret pour une partie d'échecs " << this->j1.getNomCouleur() 
+       << " et " << this->j2.getNomCouleur() << "?" << endl;
+  cout << this->afficher();
+  while (1) {
+    end = 0;
+    if (this->estEchec(this->roiBlanc, 1)) {
+      cout << "Echec!" << endl;
+    }
+    if (game(0) == 1) {
+      this->abandon(0);
+      break;
+    }
+    if (this->fin) {
+      this->winner(0);
+      break;
+    }
+    
+    if (this->estEchec(this->roiNoir, 2)) {
+      cout << "Echec!" << endl;
+    }
+    if (game(1) == 1) {
+      this->abandon(1);
+      break;
+    }
+    if (this->fin) {
+      this->winner(1);
+      break;
+    }
+    
+  }
+  return this->endGame();
+}
+
+string Echequier::afficher()
+{
+  string s = "";
+  s += "X\\Y  1   2   3   4   5   6   7   8\n";
+  for (int i(0); i < this->tailleH; i++) {
+    s += "------------------------------------\n ";
+    s += intToString(i+1);
+    s += " |";
+    for (int j(0); j < this->tailleV; j++) {
+      s += this->getCase(Position(i, j))->afficher() + "|";
+    }
+    s += "\n";
+  }
+  s += "------------------------------------\n";
+  return s;
+}
+
+int Echequier::endGame()
+{
+  cout << "Belle partie! A la prochaine!" << endl;
+  return 0;
 }
