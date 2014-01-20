@@ -34,8 +34,8 @@ PlateauO::PlateauO(string names[]): Plateau(8,8)
     }
   }
 
-  this->j1 = Joueur(names[0], 40, 1);
-  this->j2 = Joueur(names[1], 40, 2);
+  this->j1 = Joueur(names[0], 0, 1);
+  this->j2 = Joueur(names[1], 0, 2);
 }
 
 PlateauO::~PlateauO()
@@ -353,7 +353,7 @@ void PlateauO::retournerDiagonale(Position p, int c, int disposition)
 void PlateauO::jouerPion(Position p, Joueur* j)
 {
   this->getCase(p)->setPion(new Pion(j->getCouleur()));
-  j->getLPions().pop_back();
+  //j->getLPions().pop_back();
 }
 
 int PlateauO::jouerPionO(Position p, Joueur* j) 
@@ -384,10 +384,10 @@ int PlateauO::game(int joueur) {
   if (joueur == 1 || joueur == 0) {
     ok = this->checkCouleurJouable(joueur);
     if (!ok) {
-      cout << j->getNom() << " tu n'as pas de possibilités!" << endl;
+      cout << j->getNomCouleur() << " tu n'as pas de possibilités!" << endl;
       return 1; 
     }
-    cout << j->getNom() << " à toi de jouer (Joueur " << joueur+1 << ")! :\n" 
+    cout << j->getNomCouleur() << " à toi de jouer (Joueur " << joueur+1 << ")! :\n" 
 	 << "Choix case (Valeurs : 1 - 8) (Format -> X Y)" << endl;
     while(true) {
       try {
@@ -447,9 +447,10 @@ int PlateauO::endGame() {
 
 int PlateauO::run() {
   int fin;
-  cout << "Bienvenue dans Othello " << this->j1.getNom() << " et " << this->j2.getNom() << "!" << endl;
+  cout << "Bienvenue dans Othello " << this->j1.getNomCouleur() << " et " 
+       << this->j2.getNomCouleur() << "!" << endl;
   cout << this->afficher();
-  /*while (1) {
+  while (1) {
     fin = 0;
     fin += game(0);
     fin += game(1);
@@ -457,7 +458,7 @@ int PlateauO::run() {
       return 1;
     else if (fin == 2)
       break;
-      }*/
+      }
   fin = endGame();
   cout << "Belle partie! A la prochaine!" << endl;
   return fin;
