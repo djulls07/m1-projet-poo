@@ -183,6 +183,133 @@ bool Echequier::estEnnemi(Position p, int c)
   return false;
 }
 
+Position Echequier::estClouee(Position p)
+{
+  Position roi, tmp;
+  int i, pasI, maxI, j, pasJ, maxJ;
+  int c;
+  if (!this->getCase(p)->hasPion())
+    return Position(-1, -1);
+  c = this->getCase(p)->getPion()->getCouleur();
+  if(c == 1)
+    roi = this->roiBlanc;
+  else
+    roi = this->roiNoir;
+
+  if (!(roi == p)) {
+    // Ligne
+    if (roi.getX() == p.getX()) {
+      // On verifie l'alignement avec le roi
+      maxI = roi.getY() - p.getY();
+      pasI = maxI < 0 ? -1 : 1;
+      i = pasI;
+      tmp = p.createModPos(0, i);
+      while (maxI != i) {
+	if (this->getCase(tmp)->hasPion())
+	  return Position(-1, -1);
+	i += pasI;
+	tmp = p.createModPos(0, i);
+      }
+      // On verifie l'alignement Roi - Piece - Ennemi qui peut prendre en ligne
+      pasI =  p.getY() - roi.getY() < 0 ? -1 : 1;
+      i = pasI;
+      tmp = p.createModPos(0, i);
+      while (this->estValide(tmp)) {
+	if (this->getCase(tmp)->hasPion()) {
+	  if (this->getCase(tmp)->getPion()->getCouleur() != c)
+	    if (this->getCase(tmp)->getPion()->prendEnLigne())
+	      return tmp;
+	  return Position(-1, -1);
+	}
+	i += pasI;
+	tmp = p.createModPos(0, i);
+      }
+    }
+
+    // Colonne
+    if (roi.getY() == p.getY()) {
+      // On verifie l'alignement avec le roi
+      maxI = roi.getX() - p.getX();
+      pasI = maxI < 0 ? -1 : 1;
+      i = pasI;
+      tmp = p.createModPos(i, 0);
+      while (maxI != i) {
+	if (this->getCase(tmp)->hasPion())
+	  return Position(-1, -1);
+	i += pasI;
+	tmp = p.createModPos(i, 0);
+      }
+      // On verifie l'alignement Roi - Piece - Ennemi qui peut prendre en ligne
+      pasI =  p.getX() - roi.getX() < 0 ? -1 : 1;
+      i = pasI;
+      tmp = p.createModPos(i, 0);
+      while (this->estValide(tmp)) {
+	if (this->getCase(tmp)->hasPion()) {
+	  if (this->getCase(tmp)->getPion()->getCouleur() != c)
+	    if (this->getCase(tmp)->getPion()->prendEnLigne())
+	      return tmp;
+	  return Position(-1, -1);
+	}
+	i += pasI;
+	tmp = p.createModPos(i, 0);
+      }
+    }
+    
+    // Diagonales
+    if (std::abs(p.getX() - roi.getX()) == std::abs(p.getY() - roi.getY())) {
+      // On verifie l'alignement avec le roi
+      maxI = roi.getX() - p.getX();
+      pasI = maxI < 0 ? -1 : 1;
+      i = pasI;
+      maxJ = roi.getY() - p.getY();
+      pasJ = maxJ < 0 ? -1 : 1;
+      j = pasJ;
+      tmp = p.createModPos(i, j);
+      while (maxI != i && maxJ != j) {
+	if (this->getCase(tmp)->hasPion())
+	  return Position(-1, -1);
+	i += pasI;
+	j += pasJ;
+	tmp = p.createModPos(i, j);
+      }
+      // On verifie l'alignement Roi - Piece - Ennemi qui peut prendre en diagonale
+      pasI =  p.getX() - roi.getX() < 0 ? -1 : 1;
+      i = pasI;
+      pasJ =  p.getY() - roi.getY() < 0 ? -1 : 1;
+      j = pasJ;
+      tmp = p.createModPos(i, j);
+      while (this->estValide(tmp)) {
+	if (this->getCase(tmp)->hasPion()) {
+	  if (this->getCase(tmp)->getPion()->getCouleur() != c)
+	    if (this->getCase(tmp)->getPion()->prendEnDiagonale())
+	      return tmp;
+	  return Position(-1, -1);
+	}
+	i += pasI;
+	j += pasJ;
+	tmp = p.createModPos(i, j);
+      }
+    }
+  }
+
+  return Position(-1, -1);
+}
+
+bool Echequier::deplacementClouee(Position depart, Position arrivee, Position cloueur)
+{
+  if (!this->estValide(cloueur))
+    return true;
+  if (depart.getX() == cloueur.getX() && arrivee.getX() == cloueur.getX())
+    return true;
+  if (depart.getY() == cloueur.getY() && arrivee.getY() == cloueur.getY())
+    return true;
+  if (std::abs(depart.getX() - cloueur.getX()) == std::abs(depart.getY() - cloueur.getY()) &&
+      std::abs(arrivee.getX() - cloueur.getX()) == std::abs(arrivee.getY() - cloueur.getY()) &&
+      std::abs(depart.getX() - arrivee.getX()) == std::abs(depart.getY() - arrivee.getY()))
+    return true;
+  return false;
+}
+
 bool Echequier::estEchec(Position p, int c)
 {
   int i, j;
@@ -356,46 +483,59 @@ bool Echequier::deplacePiecePion(Position depart, Position arrivee)
   if (this->getCase(depart)->getPion()->getCouleur() == 1) {
     if (arrivee == depart.createModPos(-1, 0)) {
       if (!(this->getCase(arrivee)->hasPion())) {
-	// Promotion
-	if (arrivee.getX() == 0) {
-	  this->mangerPion(depart);
-	  this->getCase(arrivee)->setPion(new Piece(this->promouvoirPion(), 1));
+	if (this->deplacementClouee(depart, arrivee, this->estClouee(depart))) {
+	  // Promotion
+	  if (arrivee.getX() == 0) {
+	    this->mangerPion(depart);
+	    this->getCase(arrivee)->setPion(new Piece(this->promouvoirPion(), 1));
+	    this->pep = false;
+	    return true;
+	  }
+	  this->deplacerPion(depart, arrivee);
 	  this->pep = false;
 	  return true;
 	}
-	this->deplacerPion(depart, arrivee);
-	this->pep = false;
-	return true;
+	cout << "Cette pièce est clouée" << endl;
       }
     // Double coup
     } else if (arrivee == depart.createModPos(-2, 0) &&
 	       !(this->getCase(depart)->getPion()->wasMoved()) &&
 	       !(this->getCase(depart.createModPos(-1, 0))->hasPion())) {
       if (!(this->getCase(arrivee)->hasPion())) {
-	this->deplacerPion(depart, arrivee);
-	this->pep = true;
-	return true;
+	if (this->deplacementClouee(depart, arrivee, this->estClouee(depart))) {
+	  this->deplacerPion(depart, arrivee);
+	  this->pep = true;
+	  return true;
+	}
+	cout << "Cette pièce est clouée" << endl;
       }
     } else if (arrivee == depart.createModPos(-1, 1) || arrivee == depart.createModPos(-1, -1)) {
       if (this->getCase(arrivee)->hasPion() &&
 	  this->getCase(arrivee)->getPion()->getCouleur() != this->getCase(depart)->getPion()->getCouleur()) {
-	// Promotion
-	if (arrivee.getX() == 0) {
-	  this->mangerPion(depart);
-	  this->mangerPion(arrivee);
-	  this->getCase(arrivee)->setPion(new Piece(this->promouvoirPion(), 1));
+	if (this->deplacementClouee(depart, arrivee, this->estClouee(depart))) {
+	  // Promotion
+	  if (arrivee.getX() == 0) {
+	    this->mangerPion(depart);
+	    this->mangerPion(arrivee);
+	    this->getCase(arrivee)->setPion(new Piece(this->promouvoirPion(), 1));
+	    this->pep = false;
+	    return true;
+	  }
+	
+	  this->deplacerPion(depart, arrivee);
 	  this->pep = false;
 	  return true;
 	}
-	this->deplacerPion(depart, arrivee);
-	this->pep = false;
-	return true;
+	cout << "Cette pièce est clouée" << endl;
       // Prise en passant
       } else if (this->priseEnPassant(arrivee)) {
-	this->deplacerPion(depart, arrivee);
-	this->mangerPion(arrivee.createModPos(1, 0));
-	this->pep = false;
-	return true;
+	if (this->deplacementClouee(depart, arrivee, this->estClouee(depart))) {
+	  this->deplacerPion(depart, arrivee);
+	  this->mangerPion(arrivee.createModPos(1, 0));
+	  this->pep = false;
+	  return true;
+	}
+	cout << "Cette pièce est clouée" << endl;
       }
     }
     
@@ -403,46 +543,58 @@ bool Echequier::deplacePiecePion(Position depart, Position arrivee)
   } else {
     if (arrivee == depart.createModPos(1, 0)) {
       if (!(this->getCase(arrivee)->hasPion())) {
-	// Promotion
-	if (arrivee.getX() == 7) {
-	  this->mangerPion(depart);
-	  this->getCase(arrivee)->setPion(new Piece(this->promouvoirPion(), 2));
+	if (this->deplacementClouee(depart, arrivee, this->estClouee(depart))) {
+	  // Promotion
+	  if (arrivee.getX() == 7) {
+	    this->mangerPion(depart);
+	    this->getCase(arrivee)->setPion(new Piece(this->promouvoirPion(), 2));
+	    this->pep = false;
+	    return true;
+	  }
+	  this->deplacerPion(depart, arrivee);
 	  this->pep = false;
 	  return true;
 	}
-	this->deplacerPion(depart, arrivee);
-	this->pep = false;
-	return true;
+	cout << "Cette pièce est clouée" << endl;
       }
     // Double coup
     } else if (arrivee == depart.createModPos(2, 0) &&
 	       !(this->getCase(depart)->getPion()->wasMoved()) &&
 	       !(this->getCase(depart.createModPos(1, 0))->hasPion())) {
       if (!(this->getCase(arrivee)->hasPion())) {
-	this->deplacerPion(depart, arrivee);
-	this->pep = true;
-	return true;
+	if (this->deplacementClouee(depart, arrivee, this->estClouee(depart))) {
+	  this->deplacerPion(depart, arrivee);
+	  this->pep = true;
+	  return true;
+	}
+	cout << "Cette pièce est clouée" << endl;
       }
     } else if (arrivee == depart.createModPos(1, 1) || arrivee == depart.createModPos(1, -1)) {
       if (this->getCase(arrivee)->hasPion() &&
 	  this->getCase(arrivee)->getPion()->getCouleur() != this->getCase(depart)->getPion()->getCouleur()) {
-	// Promotion
-	if (arrivee.getX() == 7) {
-	  this->mangerPion(depart);
-	  this->mangerPion(arrivee);
-	  this->getCase(arrivee)->setPion(new Piece(this->promouvoirPion(), 2));
+	if (this->deplacementClouee(depart, arrivee, this->estClouee(depart))) {
+	  // Promotion
+	  if (arrivee.getX() == 7) {
+	    this->mangerPion(depart);
+	    this->mangerPion(arrivee);
+	    this->getCase(arrivee)->setPion(new Piece(this->promouvoirPion(), 2));
+	    this->pep = false;
+	    return true;
+	  }
+	  this->deplacerPion(depart, arrivee);
 	  this->pep = false;
 	  return true;
 	}
-	this->deplacerPion(depart, arrivee);
-	this->pep = false;
-	return true;
+	cout << "Cette pièce est clouée" << endl;
       // Prise en passant
       } else if (this->priseEnPassant(arrivee)) {
-	this->deplacerPion(depart, arrivee);
-	this->mangerPion(arrivee.createModPos(-1, 0));
-	this->pep = false;
-	return true;
+	if (this->deplacementClouee(depart, arrivee, this->estClouee(depart))) {
+	  this->deplacerPion(depart, arrivee);
+	  this->mangerPion(arrivee.createModPos(-1, 0));
+	  this->pep = false;
+	  return true;
+	}
+	cout << "Cette pièce est clouée" << endl;
       }
     }
   }
@@ -462,8 +614,11 @@ bool Echequier::deplacePieceCavalier(Position depart, Position arrivee)
       arrivee == depart.createModPos(-1, -2)) {
     if (!(this->getCase(arrivee)->hasPion() &&
 	this->getCase(arrivee)->getPion()->getCouleur() == this->getCase(depart)->getPion()->getCouleur())) {
-      this->deplacerPion(depart, arrivee);
-      return true;
+      if (this->deplacementClouee(depart, arrivee, this->estClouee(depart))) {
+	this->deplacerPion(depart, arrivee);
+	return true;
+      }
+      cout << "Cette pièce est clouée" << endl;
     }
   }
   return false;
@@ -489,8 +644,12 @@ bool Echequier::deplacePieceFou(Position depart, Position arrivee)
 	if (this->getCase(p)->hasPion() && 
 	    this->getCase(p)->getPion()->getCouleur() == this->getCase(depart)->getPion()->getCouleur())
 	  return false;
-	this->deplacerPion(depart, arrivee);
-	return true;
+	if (this->deplacementClouee(depart, arrivee, this->estClouee(depart))) {
+	  this->deplacerPion(depart, arrivee);
+	  return true;
+	}
+	cout << "Cette pièce est clouée" << endl;
+	return false;
       }
       i += pasI;
       j += pasJ;
@@ -520,8 +679,12 @@ bool Echequier::deplacePieceTour(Position depart, Position arrivee)
 	if (this->getCase(p)->hasPion() && 
 	    this->getCase(p)->getPion()->getCouleur() == this->getCase(depart)->getPion()->getCouleur())
 	  return false;
-	this->deplacerPion(depart, arrivee);
-	return true;
+	if (this->deplacementClouee(depart, arrivee, this->estClouee(depart))) {
+	  this->deplacerPion(depart, arrivee);
+	  return true;
+	}
+	cout << "Cette pièce est clouée" << endl;
+	return false;
       }
       i += pasI;
       j += pasJ;
@@ -552,8 +715,12 @@ bool Echequier::deplacePieceDame(Position depart, Position arrivee)
 	if (this->getCase(p)->hasPion() && 
 	    this->getCase(p)->getPion()->getCouleur() == this->getCase(depart)->getPion()->getCouleur())
 	  return false;
-	this->deplacerPion(depart, arrivee);
-	return true;
+	if (this->deplacementClouee(depart, arrivee, this->estClouee(depart))) {
+	  this->deplacerPion(depart, arrivee);
+	  return true;
+	}
+	cout << "Cette pièce est clouée" << endl;
+	return false;
       }
       i += pasI;
       j += pasJ;
@@ -571,7 +738,7 @@ bool Echequier::deplacePieceRoi(Position depart, Position arrivee)
       arrivee.getX() - depart.getX() <= 1 &&
       arrivee.getY() - depart.getY() >= -1 &&
       arrivee.getY() - depart.getY() <= 1) {
-    if (this->estEnnemi(arrivee, c)) {
+    if (this->estEnnemi(arrivee, c) || !this->getCase(arrivee)->hasPion()) {
       if (!this->menaceeParRoi(arrivee, c)) {
 	if (!(this->estEchec(arrivee, c))) {
 	  this->deplacerPion(depart, arrivee);
@@ -765,7 +932,7 @@ int Echequier::game(int joueur) {
     //this->checkCaseJouable()
     
     this->afficher();
-    cout << j->getNom() << " à toi de jouer (Joueur " << joueur+1 << ")! :" << endl; 
+    cout << j->getNomCouleur() << " à toi de jouer (Joueur " << joueur+1 << ")! :" << endl; 
     cout << "Pour abandonner, jouer le roi sur place" << endl;
     while(true) {
       try {

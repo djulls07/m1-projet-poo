@@ -39,6 +39,8 @@ class Echequier : public Plateau
     int promouvoirPion();
     bool priseEnPassant(Position p);
     bool estEnnemi(Position p, int c);
+    Position estClouee(Position p);
+    bool deplacementClouee(Position depart, Position arrivee, Position cloueur);
     bool estEchec(Position p, int c);
     bool deplacePiecePion(Position depart, Position arrivee);
     bool deplacePieceCavalier(Position depart, Position arrivee);
