@@ -190,8 +190,39 @@ int PlateauP4::checkDiag(Position p, bool b) //si true diago gauche->drt
 
 int PlateauP4::checkLignes()
 {
+int count = 0;
+  int couleur = -1;
+  Case *c;
+  int j;
+
+  for (int i(0); i<tailleV; i++) {
+    j = 0;
+    count = 0;
+    couleur = -1;
+    c = this->getCase(Position(j++, i));
+    if (c->hasPion()) {
+      count++;
+      couleur = c->getPion()->getCouleur();
+    }
+    while (j<tailleH) {
+      c = this->getCase(Position(j++,i));
+      if (c->hasPion()) {
+	if (c->getPion()->getCouleur() == couleur) {
+	  count++;
+	  if (count == 4) return couleur;
+	} else {
+	  count = 1;
+	  couleur = c->getPion()->getCouleur();
+	}
+      } else {
+	count = 0;
+	couleur = -1;
+      }
+    }
+  }
   return 0;
 }
+
   
 bool PlateauP4::checkCaseJouable(Position p)
 { 
