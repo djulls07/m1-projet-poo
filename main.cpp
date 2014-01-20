@@ -2,6 +2,7 @@
 #include "include/PlateauP4.h"
 #include "include/PlateauO.h"
 #include "include/PlateauFoM.h"
+#include "include/Echequier.h"
 
 using namespace std;
 
@@ -64,6 +65,15 @@ int main(int argc, char **argv)
     p->run();
     delete(p);
   } else {
+    cout << "Choix nom joueurs, Joueur 1 ?" << endl;
+    cin >> j[0];
+    cout << "joueur 1 : " << j[0] << endl;
+    cout << "Choix nom joueurs, Joueur 2 ?" << endl;
+    cin >> j[1];
+    cout << "Joueur 2 : " << j[1] << endl;
+    Echequier *e = new Echequier(j);
+    e->run();
+    delete(e);
     //echec
   }
   return 0;
