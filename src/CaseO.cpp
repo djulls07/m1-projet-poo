@@ -11,7 +11,7 @@ CaseO::CaseO(int x, int y) : Case(x, y)
 
 CaseO::~CaseO()
 {
-
+  if (this->p !=0) delete(this->p);
 }
 
 int CaseO::isJouable()
