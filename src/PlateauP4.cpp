@@ -16,8 +16,8 @@ PlateauP4::PlateauP4(string names[]) : Plateau(7,6)
     for (j=0; j<tailleV; j++)
       this->grille[i][j] = new Case(i,j);
   }
-  this->j1 = Joueur(names[0], 21, 1);
-  this->j2 = Joueur(names[1], 21, 2);
+  this->j1 = Joueur(names[0], 0 , 1);
+  this->j2 = Joueur(names[1], 0 , 2);
 }
 
 
@@ -82,7 +82,6 @@ int PlateauP4::checkColonnes()
     count = 0;
     couleur = -1;
     c = this->getCase(Position(i, j++));
-    if (c==0) cout << "NAAAHHH";
     if (c->hasPion()) {
       count++;
       couleur = c->getPion()->getCouleur();
@@ -204,18 +203,14 @@ bool PlateauP4::checkCaseJouable(Position p)
 void PlateauP4::jouerPion(Position p, Joueur *j)
 {
   int i(0);
-  if (j->getLPions().size() > 0) {
-    while(i < 6 && !this->getCase(p.createModPos(0, i))->hasPion())i++;
-    this->getCase(p.createModPos(0, i-1))->
-      setPion(new Pion(j->getLPions().back()->getCouleur()));
-    j->getLPions().pop_back();
-  }
+  while(i < 6 && !this->getCase(p.createModPos(0, i))->hasPion())i++;
+  this->getCase(p.createModPos(0, i-1))->setPion(new Pion(j->getCouleur()));
 }
 
 string PlateauP4::afficher()
 { 
   string s = "";
-  s += "X\\Y  1   2   3   4   5   6   7   8\n";
+  s += "X\\Y  1   2   3   4   5   6   7 \n";
   for (int i(0); i < this->tailleV; i++) {
     s += "------------------------------------\n ";
     s += intToString(i+1);
@@ -225,7 +220,7 @@ string PlateauP4::afficher()
     }
     s += "\n";
   }
-  s += "------------------------------------\n";
+  s += "----------------------------------\n";
   return s;
 }
 
@@ -243,7 +238,6 @@ int PlateauP4::run()
     game(1);
     cout << afficher();
   }
-  this->getCase(Position(0,5))->getPion()->setCouleur(1);
   cout << afficher();
   w = "Partie terminée, le vainqueur est -> ";
   if (winner == 1) w += j1.getNomCouleur();

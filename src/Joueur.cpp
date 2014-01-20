@@ -8,9 +8,10 @@ Joueur::Joueur(std::string name, int nbPions, int couleur)
 {
     //ctor
   this->nom = name;
-  this->lPions = std::vector<Pion*>(nbPions);
+  this->lPions = std::vector<Pion*>();
   for (int i(0); i<nbPions; i++) {
-    this->lPions[i] = new Pion(couleur);
+    //this->lPions[i] = new Pion(couleur);
+    this->lPions.push_back(new Pion(couleur));
   }
   this->couleur = couleur;
 }
