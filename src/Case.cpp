@@ -14,7 +14,7 @@ Case::Case(int x, int y): pos(x,y)
 Case::~Case()
 {
     //dtor
-  if (this->p !=0) delete(this->p);
+  if (this->hasPion()) delete(this->p);
 }
 
 Position Case::getPosition()

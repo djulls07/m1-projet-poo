@@ -10,8 +10,7 @@ int main()
   
   cin >> j[0];
   cout << "joueur 1 : " << j[0] << endl;
-  cin >> j[1];  cout << "Partie terminee" << endl;
-
+  cin >> j[1];
   cout << "Joueur 2 : " << j[1] << endl;
   PlateauP4 *p = new PlateauP4(j);
   p->run();

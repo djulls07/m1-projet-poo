@@ -206,7 +206,8 @@ void PlateauP4::jouerPion(Position p, Joueur *j)
   int i(0);
   if (j->getLPions().size() > 0) {
     while(i < 6 && !this->getCase(p.createModPos(0, i))->hasPion())i++;
-    this->getCase(p.createModPos(0, i-1))->setPion(j->getLPions().back());
+    this->getCase(p.createModPos(0, i-1))->
+      setPion(new Pion(j->getLPions().back()->getCouleur()));
     j->getLPions().pop_back();
   }
 }
@@ -220,7 +221,7 @@ string PlateauP4::afficher()
     s += intToString(i+1);
     s += " | ";
     for (int j(0); j < this->tailleH; j++) {
-      s += this->getCase(Position(i, j))->afficher() + " | ";
+      s += this->getCase(Position(j, i))->afficher() + " | ";
     }
     s += "\n";
   }
@@ -242,6 +243,8 @@ int PlateauP4::run()
     game(1);
     cout << afficher();
   }
+  this->getCase(Position(0,5))->getPion()->setCouleur(1);
+  cout << afficher();
   w = "Partie terminée, le vainqueur est -> ";
   if (winner == 1) w += j1.getNomCouleur();
   else if (winner == 2) w += j2.getNomCouleur();
