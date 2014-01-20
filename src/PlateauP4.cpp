@@ -46,12 +46,11 @@ int PlateauP4::game(int n)
     " ) choix colonne ? ( 1 -7 )" << endl;
   while(1) {
     try {
-      cin >> col;
+      col = lireEntier(1, 7);
       if (col < 1 || col > 7) throw 7;
       break;
     } catch (int e) {
       cout << "Erreur, besoin d'un nombre entre 1 et 7, essaye encore !" << endl;
-      continue;
     }
   }
   col--;

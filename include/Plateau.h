@@ -3,6 +3,7 @@
 #include "Joueur.h"
 #include "fonctions.h"
 #include <vector>
+#include <iostream>
 #include <string>
 #define PLATEAU_H
 
