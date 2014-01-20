@@ -1,5 +1,6 @@
 #include "../include/PlateauO.h"
 #include <iostream>
+#include <limits>
 using namespace std;
 
 PlateauO::PlateauO(string names[]): Plateau(8,8)
@@ -21,28 +22,34 @@ PlateauO::PlateauO(string names[]): Plateau(8,8)
 	else if (j == 3)
 	  this->grille[i][j]->setPion(new Pion(1));
 	else if (j == 4)
-	  this->grille[i][j]->setPion(new Pion(0));
+	  this->grille[i][j]->setPion(new Pion(2));
       } else if (i == 4) {
 	if (j == 2 || j == 5)
 	  this->grille[i][j]->setJouable();
 	else if (j == 3)
-	  this->grille[i][j]->setPion(new Pion(0));
+	  this->grille[i][j]->setPion(new Pion(2));
 	else if (j == 4)
 	  this->grille[i][j]->setPion(new Pion(1));
       }
     }
   }
 
-  this->j1 = Joueur(names[0], 64, 0);
-  this->j2 = Joueur(names[1], 64, 1);
+  this->j1 = Joueur(names[0], 40, 1);
+  this->j2 = Joueur(names[1], 40, 2);
 }
 
 PlateauO::~PlateauO()
 {    //dtor
-  for (int i(0); i<tailleH; i++) {
-    for (int j(0); j<tailleV; j++)
+  /*for (int i(0); i<tailleH; i++) {
+    for (int j(0); j<tailleV; j++) {
       delete(this->grille[i][j]);
-  }
+      cout << "i:" << i << " j:" << j << endl;
+    }
+    }*/
+  
+  cout << "SHIT" << endl;
+  j1.~Joueur();
+  cout << "dtor" << endl;
 }
 
 CaseO* PlateauO::getCase(Position p)
@@ -53,8 +60,6 @@ CaseO* PlateauO::getCase(Position p)
   
 }
 
-// DEMANDER A JULES DE RAJOUTER DANS CASE -> int hasPion()
-//                                           int getCouleur()
 int PlateauO::checkCaseJouableHorizontale(Position p, int c) 
 {
   int i;
@@ -94,7 +99,7 @@ int PlateauO::checkCaseJouableVerticale(Position p, int c)
   if (p.getY()-2 >= 0 && 
       this->getCase(p.createModPos(0, -1))->hasPion() &&
       this->getCase(p.createModPos(0, -1))->getPion()->getCouleur() != c) {
-    for (i = 2; p.getY()-i >= 0; i--) {
+    for (i = 2; p.getY()-i >= 0; i++) {
       if (!this->getCase(p.createModPos(0, -i))->hasPion())
 	break;
       if (this->getCase(p.createModPos(0, -i))->getPion()->getCouleur() == c) {
@@ -196,9 +201,9 @@ int PlateauO::checkCouleurJouable(int c)
     for (j = 0; j < tailleV; j++) {
       p = Position(i, j);
       if (this->checkCaseJouable(p)) {
-	ret = this->checkCaseJouableHorizontale(p, c) +
-	  this->checkCaseJouableVerticale(p, c) +
-	  this->checkCaseJouableDiagonale(p, c);
+	ret = this->checkCaseJouableHorizontale(p, c+1) +
+	  this->checkCaseJouableVerticale(p, c+1) +
+	  this->checkCaseJouableDiagonale(p, c+1);
 	this->getCase(p)->setDisposition(c, ret);
 	if (ret > 0)
 	  ok = 1;
@@ -220,7 +225,7 @@ void PlateauO::retournerHorizontale(Position p, int c, int disposition)
 	while (this->getCase(p.createModPos(-i, 0))->hasPion() &&
 	       this->getCase(p.createModPos(-i, 0))->getPion()->getCouleur() != c) {
 	  this->getCase(p.createModPos(-i, 0))->getPion()->setCouleur(c);
-	  cout << "retournerHorizontale1 i:" << i << " "  << p.getX()-i << " " << p.getY() << endl;
+	  //cout << "retournerHorizontale1 i:" << i << " "  << p.getX()-i << " " << p.getY() << endl;
 	  i++;
 	}
       }
@@ -235,7 +240,7 @@ void PlateauO::retournerHorizontale(Position p, int c, int disposition)
 	while (this->getCase(p.createModPos(i, 0))->hasPion() &&
 	       this->getCase(p.createModPos(i, 0))->getPion()->getCouleur() != c) {
 	  this->getCase(p.createModPos(i, 0))->getPion()->setCouleur(c);
-	  cout << "retournerHorizontale2 i:" << i << " "  << p.getX()+i << " " << p.getY() << endl;
+	  //cout << "retournerHorizontale2 i:" << i << " "  << p.getX()+i << " " << p.getY() << endl;
 	  i++;
 	}
       }
@@ -254,7 +259,7 @@ void PlateauO::retournerVerticale(Position p, int c, int disposition)
 	while (this->getCase(p.createModPos(0, -i))->hasPion() &&
 	       this->getCase(p.createModPos(0, -i))->getPion()->getCouleur() != c) {
 	  this->getCase(p.createModPos(0, -i))->getPion()->setCouleur(c);
-	  cout << "retournerVerticale1 i:" << i << " "  << p.getX() << " " << p.getY()-i << endl;
+	  //cout << "retournerVerticale1 i:" << i << " "  << p.getX() << " " << p.getY()-i << endl;
 	  i++;
 	}
       }
@@ -269,7 +274,7 @@ void PlateauO::retournerVerticale(Position p, int c, int disposition)
 	while (this->getCase(p.createModPos(0, i))->hasPion() &&
 	       this->getCase(p.createModPos(0, i))->getPion()->getCouleur() != c) {
 	  this->getCase(p.createModPos(0, i))->getPion()->setCouleur(c);
-	  cout << "retournerVerticale2 i:" << i << " "  << p.getX() << " " << p.getY()+i << endl;
+	  //cout << "retournerVerticale2 i:" << i << " "  << p.getX() << " " << p.getY()+i << endl;
 	  i++;
 	}
       }
@@ -289,7 +294,7 @@ void PlateauO::retournerDiagonale(Position p, int c, int disposition)
 	while (this->getCase(p.createModPos(-i, -i))->hasPion() &&
 	       this->getCase(p.createModPos(-i, -i))->getPion()->getCouleur() != c) {
 	  this->getCase(p.createModPos(-i, -i))->getPion()->setCouleur(c);
-	  cout << "retournerDiagonale1 i:" << i << " "  << p.getX()-i << " " << p.getY()-i << endl;
+	  //cout << "retournerDiagonale1 i:" << i << " "  << p.getX()-i << " " << p.getY()-i << endl;
 	  i++;
 	}
       }
@@ -304,7 +309,7 @@ void PlateauO::retournerDiagonale(Position p, int c, int disposition)
 	while (this->getCase(p.createModPos(i, i))->hasPion() &&
 	       this->getCase(p.createModPos(i, i))->getPion()->getCouleur() != c) {
 	  this->getCase(p.createModPos(i, i))->getPion()->setCouleur(c);
-	  cout << "retournerDiagonale2 i:" << i << " "  << p.getX()+i << " " << p.getY()+i << endl;
+	  //cout << "retournerDiagonale2 i:" << i << " "  << p.getX()+i << " " << p.getY()+i << endl;
 	  i++;
 	}
       }
@@ -319,7 +324,7 @@ void PlateauO::retournerDiagonale(Position p, int c, int disposition)
 	while (this->getCase(p.createModPos(-i, i))->hasPion() &&
 	       this->getCase(p.createModPos(-i, i))->getPion()->getCouleur() != c) {
 	  this->getCase(p.createModPos(-i, i))->getPion()->setCouleur(c);
-	  cout << "retournerDiagonale3 i:" << i << " "  << p.getX()-i << " " << p.getY()+i << endl;
+	  //cout << "retournerDiagonale3 i:" << i << " "  << p.getX()-i << " " << p.getY()+i << endl;
 	  i++;
 	}
       }
@@ -334,7 +339,7 @@ void PlateauO::retournerDiagonale(Position p, int c, int disposition)
 	while (this->getCase(p.createModPos(i, -i))->hasPion() &&
 	       this->getCase(p.createModPos(i, -i))->getPion()->getCouleur() != c) {
 	  getCase(p.createModPos(i, -i))->getPion()->setCouleur(c);
-	  cout << "retournerDiagonale4 i:" << i << " "  << p.getX()+i << " " << p.getY()-i << endl;
+	  //cout << "retournerDiagonale4 i:" << i << " "  << p.getX()+i << " " << p.getY()-i << endl;
 	  i++;
 	}
       }
@@ -347,13 +352,13 @@ void PlateauO::retournerDiagonale(Position p, int c, int disposition)
 
 void PlateauO::jouerPion(Position p, Joueur* j)
 {
-  this->getCase(p)->setPion(j->getLPions().back());
+  this->getCase(p)->setPion(new Pion(j->getCouleur()));
   j->getLPions().pop_back();
 }
 
 int PlateauO::jouerPionO(Position p, Joueur* j) 
 {
-  int dispo = this->getCase(p)->getDisposition(j->getCouleur());
+  int dispo = this->getCase(p)->getDisposition(j->getCouleur()-1);
   if (this->getCase(p)->isJouable() && dispo > 0) {
     jouerPion(p, j);
     this->retournerHorizontale(p, j->getCouleur(), dispo);
@@ -394,6 +399,8 @@ int PlateauO::game(int joueur) {
 	if (e == 0) {
 	  cout << "Erreur : N'essaye pas de jouer en dehors du plateau petit coquin!\n" 
 	       << "(Valeurs : 1 - 8) (Format -> X Y)" << endl;
+	  cin.clear();
+	  cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 	  continue;
 	} else if (e == 1) {
 	  cout << "Erreur : Tu ne peux pas jouer la!\n" 
@@ -417,19 +424,21 @@ int PlateauO::endGame() {
     for (int j(0); j < tailleH; j++) {
       p = Position(i, j);
       if (this->getCase(p)->hasPion()) {
-	if (this->getCase(p)->getPion()->getCouleur() == 0)
+	if (this->getCase(p)->getPion()->getCouleur() == 1)
 	  ptsJ1++;
-	else if (this->getCase(p)->getPion()->getCouleur() == 1)
+	else if (this->getCase(p)->getPion()->getCouleur() == 2)
 	  ptsJ2++;
       }
     }
   }
   
   if (ptsJ1 > ptsJ2) 
-    cout << "Bravo " << this->j1.getNom() << "! Tu as gagné (Joueur 1) avec " << ptsJ1 << " points contre "
+    cout << "Bravo " << this->j1.getNomCouleur() << "! Tu as gagné (Joueur 1) avec " 
+	 << ptsJ1 << " points contre "
 	 << ptsJ2 << " points." << endl;
-  else if (ptsJ1 > ptsJ2) 
-    cout << "Bravo " << this->j2.getNom() << "! Tu as gagné (Joueur 2) avec " << ptsJ2 << " points contre "
+  else if (ptsJ1 < ptsJ2) 
+    cout << "Bravo " << this->j2.getNomCouleur() << "! Tu as gagné (Joueur 2) avec " 
+	 << ptsJ2 << " points contre "
 	 << ptsJ1 << " points." << endl;
   else
     cout << "Egalité! " << ptsJ1 << " points partout." << endl;
@@ -440,7 +449,7 @@ int PlateauO::run() {
   int fin;
   cout << "Bienvenue dans Othello " << this->j1.getNom() << " et " << this->j2.getNom() << "!" << endl;
   cout << this->afficher();
-  while (1) {
+  /*while (1) {
     fin = 0;
     fin += game(0);
     fin += game(1);
@@ -448,7 +457,7 @@ int PlateauO::run() {
       return 1;
     else if (fin == 2)
       break;
-  }
+      }*/
   fin = endGame();
   cout << "Belle partie! A la prochaine!" << endl;
   return fin;
@@ -458,11 +467,11 @@ string PlateauO::afficher()
 {
   string s = "";
   s += "X\\Y  1   2   3   4   5   6   7   8\n";
-  for (int i(0); i < this->tailleV; i++) {
+  for (int i(0); i < this->tailleH; i++) {
     s += "------------------------------------\n ";
     s += intToString(i+1);
     s += " | ";
-    for (int j(0); j < this->tailleH; j++) {
+    for (int j(0); j < this->tailleV; j++) {
       s += this->getCase(Position(i, j))->afficher() + " | ";
     }
     s += "\n";
