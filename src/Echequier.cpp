@@ -919,7 +919,7 @@ void Echequier::abandon(int joueur)
     this->winner(1);
   } else {
     cout << j2.getNomCouleur() << " a abandonné" << endl;
-    this->winner(2);
+    this->winner(0);
   }
 }
 
@@ -974,11 +974,11 @@ int Echequier::game(int joueur) {
 	  continue;
 	} else if (e == 4) {
 	  cout << "Erreur : Ceci est une case vide ...\n" << endl;
-	  cout << x << y << " " << this->getCase(Position(x-1, y-1))->hasPion()  << " " << this->getCase(Position(x-1, y-1))->afficher() << endl;
 	  continue;
 	} 
       }
     }
+    cout << endl;
     cout << this->afficher();
     return 0;
   }
@@ -1004,7 +1004,7 @@ int Echequier::run() {
       this->winner(0);
       break;
     }
-    
+
     if (this->estEchec(this->roiNoir, 2)) {
       cout << "Echec!" << endl;
     }
@@ -1016,7 +1016,6 @@ int Echequier::run() {
       this->winner(1);
       break;
     }
-    
   }
   return this->endGame();
 }
