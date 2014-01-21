@@ -39,17 +39,12 @@ PlateauO::PlateauO(string names[]): Plateau(8,8)
 }
 
 PlateauO::~PlateauO()
-{    //dtor
-  /*for (int i(0); i<tailleH; i++) {
+{
+  for (int i(0); i<tailleH; i++) {
     for (int j(0); j<tailleV; j++) {
       delete(this->grille[i][j]);
-      cout << "i:" << i << " j:" << j << endl;
     }
-    }*/
-  
-  cout << "SHIT" << endl;
-  j1.~Joueur();
-  cout << "dtor" << endl;
+  }
 }
 
 CaseO* PlateauO::getCase(Position p)
@@ -450,7 +445,7 @@ int PlateauO::run() {
   cout << "Bienvenue dans Othello " << this->j1.getNomCouleur() << " et " 
        << this->j2.getNomCouleur() << "!" << endl;
   cout << this->afficher();
-  while (1) {
+  /* while (1) {
     fin = 0;
     fin += game(0);
     fin += game(1);
@@ -458,7 +453,7 @@ int PlateauO::run() {
       return 1;
     else if (fin == 2)
       break;
-      }
+  }*/
   fin = endGame();
   cout << "Belle partie! A la prochaine!" << endl;
   return fin;

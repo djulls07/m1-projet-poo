@@ -99,7 +99,11 @@ Echequier::Echequier(string names[]): Plateau(8, 8)
 
 Echequier::~Echequier()
 {
-
+  for (int i(0); i<tailleH; i++) {
+    for (int j(0); j<tailleV; j++) {
+      delete(this->grille[i][j]);
+    }
+  }
 }
 
 CaseE* Echequier::getCase(Position p)
