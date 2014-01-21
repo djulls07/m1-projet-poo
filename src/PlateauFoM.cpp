@@ -307,10 +307,16 @@ int PlateauFoM::count(Position p, int x, int y)
   return count;
 }
 
+
 bool PlateauFoM::calculChemin(Position p1, Position p2)
 {
+  bool ret;
+  vector <vector <bool> > *memory = new vector <vector <bool> >(tailleH, vector<bool>(tailleV, false));
+  (*memory)[p1.getX()][p1.getY()] = true;
   Position direction = Position(p2.getX() - p1.getX(), p2.getY() - p1.getY());
-  return this->subCalculChemin(p1, 5, direction);
+  ret = this->subCalculChemin(p1, 5, direction, memory);
+  delete(memory);
+  return ret;
 }
 
 int PlateauFoM::subCalcul(Position p, Position direction) {
@@ -322,6 +328,13 @@ int PlateauFoM::subCalcul(Position p, Position direction) {
         ret += 4020;
       } else
         ret += 2040;
+
+    } else if (direction.getY() == 0) {
+      ret += 1030;
+	if (direction.getX() > 0) {
+	  ret += 402;
+	} else
+	  ret += 204;
     } else {
       ret += 103;
       if (direction.getX() > 0) {
@@ -333,9 +346,15 @@ int PlateauFoM::subCalcul(Position p, Position direction) {
     if (direction.getX() > 0) {
       ret += 402;
       if (direction.getY() < 0) {
-         ret += 3010;
+        ret += 3010;
       } else
         ret += 1030;
+    } else if (direction.getX() == 0) {
+      ret += 4020;
+	if (direction.getY() < 0) {
+	  ret += 301;
+	} else
+	  ret += 103;
     } else {
       ret += 204;
       if (direction.getY() < 0) {
@@ -349,7 +368,7 @@ int PlateauFoM::subCalcul(Position p, Position direction) {
  
 	
 
-bool PlateauFoM::subCalculChemin(Position ici, int entree, Position direction)
+bool PlateauFoM::subCalculChemin(Position ici, int entree, Position direction, vector <vector <bool> > *memory)
 {
   int ordre;
   int cond = 0;
@@ -362,35 +381,45 @@ bool PlateauFoM::subCalculChemin(Position ici, int entree, Position direction)
   while (ordre) {
     // Nord
     if (ordre%10 == 1 && entree != 0) {
+	//cout << "Nord" << endl;
       tmp = ici.createModPos(0, -1);
-      if (this->estValide(tmp) && !this->getCase(tmp)->hasPion())
-	if (this->subCalculChemin(tmp, 2, direction.createModPos(0, 1)))
+      if (this->estValide(tmp) && !this->getCase(tmp)->hasPion() && !(*memory)[tmp.getX()][tmp.getY()]) {
+	(*memory)[tmp.getX()][tmp.getY()] = true;
+	if (this->subCalculChemin(tmp, 2, direction.createModPos(0, 1), memory))
 	  return true;
+      }
       // Est
     } else if (ordre%10 == 2 && entree != 1) {
+	//cout << "Est" << endl;
       tmp = ici.createModPos(1, 0);
-      if (this->estValide(tmp) && !this->getCase(tmp)->hasPion())
-	if (this->subCalculChemin(tmp, 3, direction.createModPos(-1, 0)))
+      if (this->estValide(tmp) && !this->getCase(tmp)->hasPion() && !(*memory)[tmp.getX()][tmp.getY()]) {
+	(*memory)[tmp.getX()][tmp.getY()] = true;
+	if (this->subCalculChemin(tmp, 3, direction.createModPos(-1, 0), memory))
 	  return true;
+      }
       // Sud
     } else if (ordre%10 == 3 && entree != 2) {
+	//cout << "Sud" << endl;
       tmp = ici.createModPos(0, 1);
-      if (this->estValide(tmp) && !this->getCase(tmp)->hasPion())
-	if (this->subCalculChemin(tmp, 0, direction.createModPos(0, -1)))
+      if (this->estValide(tmp) && !this->getCase(tmp)->hasPion() && !(*memory)[tmp.getX()][tmp.getY()]) {
+	(*memory)[tmp.getX()][tmp.getY()] = true;
+	if (this->subCalculChemin(tmp, 0, direction.createModPos(0, -1), memory))
 	  return true;
+      }
       // Ouest
     } else if (ordre%10 == 4 && entree != 3) {
+	//cout << "Ouest" << endl;
       tmp = ici.createModPos(-1, 0);
-      if (this->estValide(tmp) && this->getCase(tmp)->hasPion())
-	if (this->subCalculChemin(tmp, 1, direction.createModPos(1, 0)))
+      if (this->estValide(tmp) && !this->getCase(tmp)->hasPion() && !(*memory)[tmp.getX()][tmp.getY()]) {
+	(*memory)[tmp.getX()][tmp.getY()] = true;
+	if (this->subCalculChemin(tmp, 1, direction.createModPos(1, 0), memory))
 	  return true;
+      }
     }
     ordre = ordre/10;
   }
   return false;
 }
-
-
 
 void PlateauFoM::retraitAlign(Position p1, Position p2)
 {
