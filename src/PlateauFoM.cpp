@@ -51,16 +51,20 @@ int PlateauFoM::run()
   int e;
   while(1) {
     game(0);
-    if((e=endGame()) == 0) return this->points;
+    if((e=endGame()) == 0)
+      cout << afficher() << endl << "Partie Terminée! Score = " << this->points << endl;
     game(0);
-    if((e=endGame()) == 0) return this->points;
+    if((e=endGame()) == 0) 
+      cout << afficher() << endl << "Partie Terminée! Score = " << this->points << endl;
     if (e == 2) cout << afficher();
     game(0);
-    if((e=endGame()) == 0) return this->points;
+    if((e=endGame()) == 0) 
+      cout << afficher() << endl << "Partie Terminée! Score = " << this->points << endl;
     cout << afficher();
     game(1);
     cout << afficher();
-    if ((e=endGame()) == 0) return this->points;
+    if ((e=endGame()) == 0)
+      cout << afficher() << endl << "Partie Terminée! Score = " << this->points << endl;
     this->afficher();
   }
 }
@@ -191,7 +195,7 @@ bool PlateauFoM::checkCaseJouable(Position p) //valide et sans pion
 string PlateauFoM::afficher()
 { 
   string s = "";
-  s += "Y\\X ";
+  s += "Y\\X  ";
   for (int i(0); i < tailleH; i++) {
     if (i<9)
       s += intToString(i+1) + "   ";
@@ -200,8 +204,13 @@ string PlateauFoM::afficher()
   }
   s+= "\n";
   for (int i(0); i < this->tailleV; i++) {
-    for (int k(0);k<tailleV/2; k++)
-      s += "----------";
+    for (int k(0);k<tailleV; k++) {
+      if (k<9)
+	s += "----";
+      else 
+	s += "------";
+    }
+    if (tailleH<10) s+= "----";
     s += "\n";
     if (i<9)
       s += intToString(i+1)+" ";
@@ -213,8 +222,13 @@ string PlateauFoM::afficher()
     }
     s += "\n";
   }
-  for (int k(0);k<tailleV/2; k++)
-    s += "----------";
+  for (int k(0);k<tailleV; k++) {
+    if (k<9)
+      s += "----";
+    else 
+      s += "------";
+  }
+  if (tailleH<10) s += "----";
   s += "\n Score = ";
   s += intToString(this->points) + " \n";
   return s;

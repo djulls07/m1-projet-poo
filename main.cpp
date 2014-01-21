@@ -39,7 +39,7 @@ int main(int argc, char **argv)
     cout << "joueur : " << j[0] << endl;
 
     cout << "Taille plateau voulu ?" << endl;
-    t = lireEntier(5,20);
+    t = lireEntier(5,15);
 
     cout << "Variante ( 1=non et 2=oui )" << endl;
     v = lireEntier(1,2) ;
@@ -50,7 +50,6 @@ int main(int argc, char **argv)
 
     PlateauFoM *p = new PlateauFoM(j[0], t, b, nb);
     int pts = p->run();
-    cout << "FIN avec un total de " << pts << " points" << endl;
     delete(p);
 
   } else if (choix == "3") {
