@@ -117,11 +117,12 @@ void PlateauFoM::jouerPionD(Position p1, Position p2)
 {
   //TODO:
   if (this->getCase(p1)->hasPion() && !this->getCase(p2)->hasPion()) {
-    if (calculChemin(p1, p2)) {
+    if (true){//calculChemin(p1, p2)) {
       this->getCase(p2)->
 	setPion(new PionFoM(this->getCase(p1)->getPion()->getCouleur()));
       this->getCase(p1)->setPion(0);
-    }  
+      verifAlign(p2);
+    }
   } else {
     cout<<"Vous devez jouer une case contenant un pion vers une case vide"<<endl;
     p1 = getChoixPos("Choix case source X(abs)",
