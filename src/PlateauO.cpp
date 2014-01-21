@@ -445,7 +445,7 @@ int PlateauO::run() {
   cout << "Bienvenue dans Othello " << this->j1.getNomCouleur() << " et " 
        << this->j2.getNomCouleur() << "!" << endl;
   cout << this->afficher();
-  /* while (1) {
+  while (1) {
     fin = 0;
     fin += game(0);
     fin += game(1);
@@ -453,7 +453,7 @@ int PlateauO::run() {
       return 1;
     else if (fin == 2)
       break;
-  }*/
+  }
   fin = endGame();
   cout << "Belle partie! A la prochaine!" << endl;
   return fin;
