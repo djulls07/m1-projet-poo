@@ -322,10 +322,13 @@ int PlateauFoM::subCalcul(Position p, Position direction) {
   return ret;
 }
  
+	
+
 bool PlateauFoM::subCalculChemin(Position ici, int entree, Position direction)
 {
   int ordre;
   int cond = 0;
+  Position tmp;
   if (!this->estValide(ici))
     return false;
   if (direction == Position(0, 0))
@@ -334,29 +337,35 @@ bool PlateauFoM::subCalculChemin(Position ici, int entree, Position direction)
   while (ordre) {
     // Nord
     if (ordre%10 == 1 && entree != 0) {
-      if (!this->getCase(ici.createModPos(0, -1))->hasPion())
-        if (this->subCalculChemin(ici.createModPos(0, -1), 2, direction.createModPos(0, 1)))
-          return true;
+      tmp = ici.createModPos(0, -1);
+      if (this->estValide(tmp) && !this->getCase(tmp)->hasPion())
+	if (this->subCalculChemin(tmp, 2, direction.createModPos(0, 1)))
+	  return true;
       // Est
     } else if (ordre%10 == 2 && entree != 1) {
-      if (!this->getCase(ici.createModPos(1, 0))->hasPion())
-        if (this->subCalculChemin(ici.createModPos(1, 0), 2, direction.createModPos(-1, 0)))
-          return true;
+      tmp = ici.createModPos(1, 0);
+      if (this->estValide(tmp) && !this->getCase(tmp)->hasPion())
+	if (this->subCalculChemin(tmp, 3, direction.createModPos(-1, 0)))
+	  return true;
       // Sud
     } else if (ordre%10 == 3 && entree != 2) {
-      if (!this->getCase(ici.createModPos(0, 1))->hasPion())
-        if (this->subCalculChemin(ici.createModPos(0, 1), 2, direction.createModPos(0, -1)))
-          return true;
+      tmp = ici.createModPos(0, 1);
+      if (this->estValide(tmp) && !this->getCase(tmp)->hasPion())
+	if (this->subCalculChemin(tmp, 0, direction.createModPos(0, -1)))
+	  return true;
       // Ouest
     } else if (ordre%10 == 4 && entree != 3) {
-      if (!this->getCase(ici.createModPos(-1, 0))->hasPion())
-        if (this->subCalculChemin(ici.createModPos(-1, 0), 2, direction.createModPos(1, 0)))
-          return true;
+      tmp = ici.createModPos(-1, 0);
+      if (this->estValide(tmp) && this->getCase(tmp)->hasPion())
+	if (this->subCalculChemin(tmp, 1, direction.createModPos(1, 0)))
+	  return true;
     }
     ordre = ordre/10;
   }
   return false;
 }
+
+
 
 void PlateauFoM::retraitAlign(Position pos1, Position pos2)
 {
