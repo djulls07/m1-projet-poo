@@ -405,5 +405,8 @@ void PlateauFoM::retraitAlign(Position pos1, Position pos2)
 
 CaseFoM *PlateauFoM::getCase(Position p)
 {
-  return this->grille[p.getX()][p.getY()];
+  if (p.getX()>=0 && p.getX()<tailleH && p.getY()>=0 && p.getY()<tailleH)
+    return this->grille[p.getX()][p.getY()];
+  else 
+    return 0;
 }
