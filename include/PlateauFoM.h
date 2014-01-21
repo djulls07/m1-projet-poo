@@ -51,7 +51,7 @@ class PlateauFoM : public Plateau
   virtual int count(Position p, int x, int y);
   virtual bool calculChemin(Position p1, Position p2);
   virtual void retraitAlign(Position p1, Position p2);
-  virtual bool subCalculChemin(Position ici, int entree, Position direction);
+  virtual bool subCalculChemin(Position ici, int entree, Position direction, std::vector <std::vector <bool> > *memory);
   virtual int subCalcul(Position p, Position direction);
 
  protected:
