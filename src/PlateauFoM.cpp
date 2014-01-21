@@ -35,9 +35,6 @@ PlateauFoM::~PlateauFoM()
 
 int PlateauFoM::endGame()
 {
-  //alignement et attribution points
-  if (verifAlign()) return 2; //si 1 alignement alors le jeu n'est pas fini.
-
   //plateau plein ou pas
   for (int i(0); i<this->tailleH; i++) {
     for (int j(0); j<this->tailleH; j++) {
@@ -54,10 +51,7 @@ int PlateauFoM::run()
   int e;
   while(1) {
     game(0);
-    cout << afficher();
     if((e=endGame()) == 0) return this->points;
-    cout << e << endl;
-    if (e == 2) cout << afficher();
     game(0);
     if((e=endGame()) == 0) return this->points;
     if (e == 2) cout << afficher();
@@ -110,6 +104,7 @@ void PlateauFoM::jouerPionC(Position p, int color)
   //TODO:
   if (this->getCase(p)->hasPion()) {
     this->getCase(p)->getPion()->setCouleur(color);
+    verifAlign(p);
   } else {
     cout << "Choisissez une case avec un pion a Color-Switch"<<endl;
     jouerPionC(getChoixPos("Choix destination X(abs)", 
@@ -220,195 +215,189 @@ string PlateauFoM::afficher()
   return s;
 }
 
-bool PlateauFoM::verifAlign()
-{
-  for (int i(0); i< tailleH; i++) {
-    verifAlignLC(i, true);
-    verifAlignLC(i, false);
-  }
-  cout << "size:" <<vp.size();
-  //verifAlignD();
+bool PlateauFoM::verifAlign(Position p)
+{  
+  CaseFoM *depart = this->getCase(p);
+  int v1 = count(p,0,1);
+  int v2 = count(p, 0, -1);
+  int h1 = count(p,1,0);
+  int h2 = count(p, -1,0);
+  int d11 = count(p,-1,-1);
+  int d12 = count(p,1,1);
+  int d21 = count(p,1,-1);
+  int d22 = count (p,-1,1);
+  int nb = 0;
   
-  retraitAlign(); //retire les pions et add les points et vide this->vp
-}
-
-void PlateauFoM::verifAlignLC(int n, bool b)
-{
-  int count = 0;
-  int couleur = 0;
-  CaseFoM *c = 0;
-  if (b) {
-    //check LIGNES
-    for (int i(0); i<tailleH; i++) {
-      c = this->getCase(Position(i, n));
-      if (c->hasPion()) {
-	if (couleur == c->getPion()->getCouleur()) {
-	  count++;
-	} else {
-	  if (count >= 5) {
-	    for (int j(1); j<=count; j++) {
-	      vp.push_back(Position(i-j, n));
-	    }
-	  }
-	  count = 1;
-	  couleur = c->getPion()->getCouleur();
-	}
-      } else {
-	if (count >= 5) {
-	  for (int j(1); j<=count; j++) {
-	    vp.push_back(Position(i-j, n));
-	  }
-	}
-	count = 0;
-	couleur = 0;
-      }
-    }
-  } else {
-    //col
-    for (int i(0); i<tailleH; i++) {
-      c = this->getCase(Position(n, i));
-      if (c->hasPion()) {
-	if (couleur == c->getPion()->getCouleur()) {
-	  count++;
-	} else {
-	  if (count >= 5) {
-	    for (int j(1); j<=count; j++) {
-	      vp.push_back(Position(n, i-j));
-	    }
-	    vp.push_back(Position(-1,-1));
-	  }
-	  count = 1;
-	  couleur = c->getPion()->getCouleur();
-	}
-      } else {
-	if (count >= 5) {
-	  for (int j(1); j<=count; j++) {
-	    vp.push_back(Position(n, i-j));
-	  }
-	  vp.push_back(Position(-1,-1));
-	}
-	count = 0;
-	couleur = 0;
-      }
-    }
+  if ((v1+v2+1) >= 5) {
+    retraitAlign(p.createModPos(0,v1),
+		 p.createModPos(0,-v2));
+    points += v1+v2+1;
+    nb++;
   }
+  if ((h1+h2+1) >= 5) {
+    retraitAlign(p.createModPos(h1, 0),
+		 p.createModPos(-h2, 0));
+    points += h2+h1+1;
+    nb++;
+  }
+  if ((d11+d12+1) >= 5) {
+    retraitAlign(p.createModPos(-d11, -d11),
+		 p.createModPos(d12, d12));
+    points += d11+d12+1;
+    nb++;
+  }
+  if ((d22+d21+1) >= 5) {
+    retraitAlign(p.createModPos(d21, -d21),
+		 p.createModPos(d22, d22));
+    points += d21+d22+1;
+    nb++;
+  }
+
+  this->points = this->points*nb;
 }
 
-void PlateauFoM::verifAlignD()
-{
-  for (int i(4); i<tailleH; i++)
-    verifAlignDG(Position(i, 0));
-  for (int i(0); i<=tailleH-5; i++)
-    verifAlignDG(Position(0, i));
-  for (int i(tailleH-5); i>=0; i--)
-    verifAlignDD(Position(0, i));
-  for (int i(0); i<tailleH-5; i++)
-    verifAlignDD(Position(i, 0));
-}
 
-      
-void PlateauFoM::verifAlignDG(Position p)
+
+int PlateauFoM::count(Position p, int x, int y)
 {
-  int x = p.getX();
-  int y = p.getY();
-  int x1, y1;
-  int color = 0;
-  int count = 0;
+  
   CaseFoM *c;
-  int couleur = 0;
-
-  while((c=this->getCase(Position(x--, y++))) != 0) {
-    if (!c->hasPion()) {
-      cout <<"Nohaspion";
-      if (count >= 5) {
-	x1 = c->getPosition().getX()+1; 
-	y1 = c->getPosition().getY()-1;
-	for (int i(0); i<count; i++) {
-	  vp.push_back(Position(x1++,y1--));
-	}
-	vp.push_back(Position(-1,-1));
-	count = 0;
-      }
-    } else {
-      cout << "HASPION";
+  Position dp;
+  int i = 1;
+  int count = 0;
+  CaseFoM *depart = this->getCase(p);
+  int couleur = depart->getPion()->getCouleur();
+  
+  while((c=this->getCase(p.createModPos(x*i, y*i))) != 0) {
+    if (c->hasPion()) {
       if (couleur == c->getPion()->getCouleur()) {
 	count++;
-      } else {
-	count = 1;
-	couleur = c->getPion()->getCouleur();
-      }
-    }
-  }
-  if (count >= 5) {
-    x1 = c->getPosition().getX()+1;
-    y1 = c->getPosition().getY()-1;
-    for (int i(0); i<count; i++) {
-      vp.push_back(Position(x1++,y1--));
-    }
-    vp.push_back(Position(-1,-1));
-  }
-}
-
-void PlateauFoM::verifAlignDD(Position p)
-{
-  int x = p.getX();
-  int y = p.getY();
-  int x1, y1;
-  int color = 0;
-  int count = 0;
-  CaseFoM *c;
-  int couleur = 0;
-
-  while((c=this->getCase(Position(x++, y++))) != 0) {
-    if (!c->hasPion()) {
-      if (count >= 5) {
-	x1 = c->getPosition().getX()-1;
-	y1 = c->getPosition().getY()-1;
-	for (int i(0); i<count; i++) {
-	  vp.push_back(Position(x1--,y1--));
-	}
-	vp.push_back(Position(-1,-1));
-	count = 0;
       }
     } else {
-      if (couleur == c->getPion()->getCouleur()) {
-	count++;
-      } else {
-	count = 1;
-	couleur = c->getPion()->getCouleur();
-      }
+      break;
     }
+    i++;
   }
-  if (count >= 5) {
-    x1 = c->getPosition().getX()-1;
-    y1 = c->getPosition().getY()-1;
-    for (int i(0); i<count; i++) {
-      vp.push_back(Position(x1--,y1--));
-    }
-    vp.push_back(Position(-1,-1));
-  }
+  return count;
 }
 
 bool PlateauFoM::calculChemin(Position p1, Position p2)
 {
-  return true;
+  Position direction = Position(p2.getX() - p1.getX(), p2.getY() - p1.getY());
+  return this->subCalculChemin(p1, 5, direction);
 }
 
-void PlateauFoM::retraitAlign()
+int PlateauFoM::subCalcul(Position p, Position direction) {
+  int ret = 0;
+  if (std::abs(direction.getY()) < std::abs(direction.getX())) {
+    if (direction.getY() < 0) {
+      ret += 301;
+      if (direction.getX() > 0) {
+        ret += 4020;
+      } else
+        ret += 2040;
+    } else {
+      ret += 103;
+      if (direction.getX() > 0) {
+        ret += 4020;
+      } else
+        ret += 2040;
+    }
+  } else {
+    if (direction.getX() > 0) {
+      ret += 402;
+      if (direction.getY() < 0) {
+        ret += 3010;
+      } else
+        ret += 1030;
+    } else {
+      ret += 204;
+      if (direction.getY() < 0) {
+        ret += 3010;
+      } else
+        ret += 1030;
+    }
+  }
+  return ret;
+}
+ 
+bool PlateauFoM::subCalculChemin(Position ici, int entree, Position direction)
+{
+  int ordre;
+  int cond = 0;
+  if (!this->estValide(ici))
+    return false;
+  if (direction == Position(0, 0))
+    return true;
+  ordre = subCalcul(ici, direction);
+  while (ordre) {
+    // Nord
+    if (ordre%10 == 1 && entree != 0) {
+      if (!this->getCase(ici.createModPos(0, -1))->hasPion())
+        if (this->subCalculChemin(ici.createModPos(0, -1), 2, direction.createModPos(0, 1)))
+          return true;
+      // Est
+    } else if (ordre%10 == 2 && entree != 1) {
+      if (!this->getCase(ici.createModPos(1, 0))->hasPion())
+        if (this->subCalculChemin(ici.createModPos(1, 0), 2, direction.createModPos(-1, 0)))
+          return true;
+      // Sud
+    } else if (ordre%10 == 3 && entree != 2) {
+      if (!this->getCase(ici.createModPos(0, 1))->hasPion())
+        if (this->subCalculChemin(ici.createModPos(0, 1), 2, direction.createModPos(0, -1)))
+          return true;
+      // Ouest
+    } else if (ordre%10 == 4 && entree != 3) {
+      if (!this->getCase(ici.createModPos(-1, 0))->hasPion())
+        if (this->subCalculChemin(ici.createModPos(-1, 0), 2, direction.createModPos(1, 0)))
+          return true;
+    }
+    ordre = ordre/10;
+  }
+  return false;
+}
+
+void PlateauFoM::retraitAlign(Position pos1, Position pos2)
 {
   int a = 0;
   int i = 1;
-  while(!vp.empty()) {
-    if (vp.back().getX() < 0) {
-      //fin d'un alignement
-      this->getCase(vp.back())->setPion((PionFoM*)0);
-      vp.pop_back();
-      this->points += ((a*a)*(i++));
-      a = 0;
+  Position p1;
+  Position p2;
+  if (pos1.getX() <= pos2.getX()) {
+    Position p1(pos1);
+    Position p2(pos2);
+  } else {
+    Position p1(pos2);
+    Position p2(pos1);
+  }
+  
+  if (p1.getX() == p2.getX()) {
+    //col
+    if(p1.getY() < p2.getY()) {
+      for (int i(p1.getY()); i<=p1.getY()-p2.getY(); i++)
+	this->getCase(Position(p1.getX(), i))->setPion(0);
+    }else {
+      for (int i(p2.getY()); i<=p2.getY()-p1.getY(); i++)
+	this->getCase(Position(p1.getX(), i))->setPion(0);
+    }
+  } else if (p1.getY() == p2.getY()) {
+    //lig
+    if(p1.getX() < p2.getX()) {
+      for (int i(p1.getX()); i<=p1.getX()-p2.getX(); i++)
+	this->getCase(Position(p1.getY(), i))->setPion(0);
+    }else {
+      for (int i(p2.getX()); i<=p2.getX()-p1.getX(); i++)
+	this->getCase(Position(p1.getY(), i))->setPion(0);
+    }
+  } else {
+    if (p1.getY() > p2.getY()) {
+      //diag /
+      for (int i(0); i<p2.getX()-p1.getX(); i++)
+	this->getCase(Position(p1.getX()+i, p1.getX()-i))->setPion(0);
     } else {
-      a++;
-      this->getCase(vp.back())->setPion(0);
-      vp.pop_back();
+      //diag \
+      for (int i(0); i<p2.getX()-p1.getX(); i++)
+	this->getCase(Position(p1.getX()-i, p1.getX()+i))->setPion(0);
     }
   }
 }

@@ -43,15 +43,17 @@ class PlateauFoM : public Plateau
   virtual int run();
   
   /* renvoi 1 si 1 alignement trouvé */
-  virtual bool verifAlign();
-  virtual void verifAlignLC(int c, bool b);
+  virtual bool verifAlign(Position p);
+  /*virtual void verifAlignLC(int c, bool b);
   virtual void verifAlignD();
   virtual void verifAlignDG(Position p);
-  virtual void verifAlignDD(Position p);
-
+  virtual void verifAlignDD(Position p);*/
+  virtual int count(Position p, int x, int y);
   virtual bool calculChemin(Position p1, Position p2);
-  virtual void retraitAlign();
- 
+  virtual void retraitAlign(Position pos1, Position pos2);
+  virtual bool subCalculChemin(Position ici, int entree, Position direction);
+  virtual int subCalcul(Position p, Position direction);
+
  protected:
   bool variante;
   int nbCouleurs;
