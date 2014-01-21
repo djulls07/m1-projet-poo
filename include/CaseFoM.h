@@ -14,7 +14,7 @@ class CaseFoM : public Case
   virtual std::string afficher();
   virtual PionFoM *getPion();
   virtual void setPion(PionFoM *p);
-  
+  virtual void delPion();
  protected:
   PionFoM *p;
 };

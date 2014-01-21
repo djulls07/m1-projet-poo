@@ -25,6 +25,12 @@ void CaseFoM::setPion(PionFoM *p)
     this->p = p;
 }
 
+void CaseFoM::delPion()
+{
+  delete(this->p);
+  this->p = 0;
+}
+
 std::string CaseFoM::afficher()
 {
   std::string s = "0";

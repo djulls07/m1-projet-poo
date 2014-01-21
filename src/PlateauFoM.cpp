@@ -190,7 +190,7 @@ bool PlateauFoM::checkCaseJouable(Position p) //valide et sans pion
 string PlateauFoM::afficher()
 { 
   string s = "";
-  s += "X\\Y ";
+  s += "Y\\X ";
   for (int i(0); i < tailleH; i++) {
     if (i<9)
       s += intToString(i+1) + "   ";
@@ -230,8 +230,8 @@ bool PlateauFoM::verifAlign(Position p)
   int nb = 0;
   
   if ((v1+v2+1) >= 5) {
-    retraitAlign(p.createModPos(0,-v1),
-		 p.createModPos(0,v2));
+    retraitAlign(p.createModPos(0,-v2),
+		 p.createModPos(0,v1));
     points += v1+v2+1;
     nb++;
   }
@@ -308,7 +308,7 @@ int PlateauFoM::subCalcul(Position p, Position direction) {
     if (direction.getX() > 0) {
       ret += 402;
       if (direction.getY() < 0) {
-        ret += 3010;
+         ret += 3010;
       } else
         ret += 1030;
     } else {
@@ -373,6 +373,8 @@ void PlateauFoM::retraitAlign(Position pos1, Position pos2)
   int i = 1;
   Position p1;
   Position p2;
+  cout << "x1 " <<pos1.getX() << " et y1" << pos1.getY();
+  cout << "  x2" << pos2.getX() << " et y2 " << pos2.getY();
   if (pos1.getX() <= pos2.getX()) {
     Position p1(pos1);
     Position p2(pos2);
@@ -384,30 +386,30 @@ void PlateauFoM::retraitAlign(Position pos1, Position pos2)
   if (p1.getX() == p2.getX()) {
     //col
     if(p1.getY() < p2.getY()) {
-      for (int i(p1.getY()); i<=p1.getY()-p2.getY(); i++)
-	this->getCase(Position(p1.getX(), i))->setPion(0);
+      for (int i(p1.getY()); i<=p2.getY(); i++)
+	this->grille[p1.getX()][i]->delPion();
     }else {
-      for (int i(p2.getY()); i<=p2.getY()-p1.getY(); i++)
-	this->getCase(Position(p1.getX(), i))->setPion(0);
+      for (int i(p2.getY()); i<=p1.getY(); i++)
+	this->grille[p1.getX()][i]->delPion();
     }
   } else if (p1.getY() == p2.getY()) {
     //lig
     if(p1.getX() < p2.getX()) {
-      for (int i(p1.getX()); i<=p1.getX()-p2.getX(); i++)
-	this->getCase(Position(p1.getY(), i))->setPion(0);
+      for (int i(p1.getX()); i<=p2.getX(); i++)
+	this->getCase(Position(p1.getY(), i))->delPion();
     }else {
-      for (int i(p2.getX()); i<=p2.getX()-p1.getX(); i++)
-	this->getCase(Position(p1.getY(), i))->setPion(0);
+      for (int i(p2.getX()); i<=p1.getX(); i++)
+	this->getCase(Position(p1.getY(), i))->delPion();
     }
   } else {
     if (p1.getY() > p2.getY()) {
       //diag /
       for (int i(0); i<p2.getX()-p1.getX(); i++)
-	this->getCase(Position(p1.getX()+i, p1.getX()-i))->setPion(0);
+	this->getCase(Position(p1.getX()+i, p1.getX()-i))->delPion();
     } else {
       //diag \
       for (int i(0); i<p2.getX()-p1.getX(); i++)
-	this->getCase(Position(p1.getX()-i, p1.getX()+i))->setPion(0);
+	this->getCase(Position(p1.getX()-i, p1.getX()+i))->delPion();
     }
   }
 }

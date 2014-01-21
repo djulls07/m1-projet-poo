@@ -240,7 +240,7 @@ void PlateauP4::jouerPion(Position p, Joueur *j)
 string PlateauP4::afficher()
 { 
   string s = "";
-  s += "X\\Y  1   2   3   4   5   6   7 \n";
+  s += "Y\\X  1   2   3   4   5   6   7 \n";
   for (int i(0); i < this->tailleV; i++) {
     s += "------------------------------------\n ";
     s += intToString(i+1);
