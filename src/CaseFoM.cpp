@@ -22,7 +22,9 @@ PionFoM *CaseFoM::getPion()
 
 void CaseFoM::setPion(PionFoM *p)
 {
-    this->p = p;
+  if (p == 0)
+    delete(this->p);
+  this->p = p;
 }
 
 void CaseFoM::delPion()
