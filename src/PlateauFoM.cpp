@@ -121,11 +121,18 @@ void PlateauFoM::jouerPionD(Position p1, Position p2)
 {
   //TODO:
   if (this->getCase(p1)->hasPion() && !this->getCase(p2)->hasPion()) {
-    if (true){//calculChemin(p1, p2)) {
+    if (calculChemin(p1, p2)) {
       this->getCase(p2)->
 	setPion(new PionFoM(this->getCase(p1)->getPion()->getCouleur()));
       this->getCase(p1)->setPion(0);
       verifAlign(p2);
+    } else {
+      cout<<"Pas de chemin possible entre ses 2 cases, faites un autre choix..."<<endl;
+      p1 = getChoixPos("Choix case source X(abs)",
+		       "Choix Case source Y(ord)").createModPos(-1,-1);
+      p2 = getChoixPos("Choix destination X(abs)", 
+		       "Choix destination Y(ord)").createModPos(-1,-1);
+      jouerPionD(p1,p2);
     }
   } else {
     cout<<"Vous devez jouer une case contenant un pion vers une case vide"<<endl;
