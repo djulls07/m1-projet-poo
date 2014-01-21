@@ -2,6 +2,7 @@
 
 CaseE::CaseE(int x, int y): Case(x, y)
 {
+  this->p = 0;
   //ctor
 }
 
