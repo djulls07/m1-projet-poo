@@ -51,13 +51,16 @@ int PlateauFoM::run()
   int e;
   while(1) {
     game(0);
+    cout << afficher();
     if((e=endGame()) == 0)
       cout << afficher() << endl << "Partie Terminée! Score = " << this->points << endl;
     game(0);
+    cout << afficher();
     if((e=endGame()) == 0) 
       cout << afficher() << endl << "Partie Terminée! Score = " << this->points << endl;
     if (e == 2) cout << afficher();
     game(0);
+    cout << afficher();
     if((e=endGame()) == 0) 
       cout << afficher() << endl << "Partie Terminée! Score = " << this->points << endl;
     cout << afficher();
@@ -120,7 +123,7 @@ void PlateauFoM::jouerPionC(Position p, int color)
 void PlateauFoM::jouerPionD(Position p1, Position p2)
 {
   //TODO:
-  if (this->getCase(p1)->hasPion() && !this->getCase(p2)->hasPion()) {
+  if (this->getCase(p1)->hasPion() && !(this->getCase(p2)->hasPion())) {
     if (calculChemin(p1, p2)) {
       this->getCase(p2)->
 	setPion(new PionFoM(this->getCase(p1)->getPion()->getCouleur()));
@@ -182,7 +185,7 @@ bool PlateauFoM::posePion(Position p, int couleur)
 {
   if (this->checkCaseJouable(p)) {
     this->getCase(p)->setPion(new PionFoM(couleur));
-    verifAlign(p);
+    if (verifAlign(p)) game(1);
     return true;
   }
   return false;
@@ -253,26 +256,31 @@ bool PlateauFoM::verifAlign(Position p)
   int d21 = count(p,1,-1);
   int d22 = count (p,-1,1);
   int nb = 1;
+  bool b = false;
   
   if ((v1+v2+1) >= 5) {
+    b = true;
     retraitAlign(p.createModPos(0,-v2),
 		 p.createModPos(0,v1));
     points += v1+v2+1;
     nb++;
   }
   if ((h1+h2+1) >= 5) {
+    b = true;
     retraitAlign(p.createModPos(-h2, 0),
       p.createModPos(h1, 0));
     points += h2+h1+1;
     nb++;
   }
   if ((d11+d12+1) >= 5) {
+    b = true;
     retraitAlign(p.createModPos(-d11, -d11),
 		 p.createModPos(d12, d12));
     points += d11+d12+1;
     nb++;
   }
   if ((d22+d21+1) >= 5) {
+    b = true;
     retraitAlign(p.createModPos(d21, -d21),
 		 p.createModPos(d22, d22));
     points += d21+d22+1;
@@ -280,6 +288,7 @@ bool PlateauFoM::verifAlign(Position p)
   }
 
   this->points = this->points*nb;
+  return b;
 }
 
 
@@ -300,7 +309,7 @@ int PlateauFoM::count(Position p, int x, int y)
 	count++;
       }
     } else {
-      break;
+      return count;
     }
     i++;
   }
@@ -425,7 +434,6 @@ void PlateauFoM::retraitAlign(Position p1, Position p2)
 {
   int a = 0;
   int i = 1;
-  
   if (p1.getX() == p2.getX()) {
     //col
     if(p1.getY() < p2.getY()) {
