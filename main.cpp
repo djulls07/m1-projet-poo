@@ -49,7 +49,7 @@ int main(int argc, char **argv)
     nb = lireEntier(1,10);
 
     PlateauFoM *p = new PlateauFoM(j[0], t, b, nb);
-    int pts = p->run();
+    p->run();
     delete(p);
 
   } else if (choix == "3") {
