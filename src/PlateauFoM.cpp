@@ -230,14 +230,14 @@ bool PlateauFoM::verifAlign(Position p)
   int nb = 0;
   
   if ((v1+v2+1) >= 5) {
-    retraitAlign(p.createModPos(0,v1),
-		 p.createModPos(0,-v2));
+    retraitAlign(p.createModPos(0,-v1),
+		 p.createModPos(0,v2));
     points += v1+v2+1;
     nb++;
   }
   if ((h1+h2+1) >= 5) {
-    retraitAlign(p.createModPos(h1, 0),
-		 p.createModPos(-h2, 0));
+    retraitAlign(p.createModPos(-h2, 0),
+      p.createModPos(h1, 0));
     points += h2+h1+1;
     nb++;
   }

@@ -15,5 +15,6 @@ PionFoM::~PionFoM()
 
 std::string PionFoM::afficher()
 {
- return intToString(this->couleur);
+  std::string n = intToString(this->couleur);
+  return "\033[3"+n+"m"+n+"\033[0m";
 }
