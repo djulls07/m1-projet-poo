@@ -50,7 +50,7 @@ class PlateauFoM : public Plateau
   virtual void verifAlignDD(Position p);*/
   virtual int count(Position p, int x, int y);
   virtual bool calculChemin(Position p1, Position p2);
-  virtual void retraitAlign(Position pos1, Position pos2);
+  virtual void retraitAlign(Position p1, Position p2);
   virtual bool subCalculChemin(Position ici, int entree, Position direction);
   virtual int subCalcul(Position p, Position direction);
 
