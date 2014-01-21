@@ -33,7 +33,7 @@ void CaseFoM::delPion()
 
 std::string CaseFoM::afficher()
 {
-  std::string s = "0";
+  std::string s = " ";
   if (this->p != 0) s = this->p->afficher();
   return s;
 }
